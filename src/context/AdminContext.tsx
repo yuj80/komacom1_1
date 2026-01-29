@@ -151,18 +151,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }, []);
 
     // Listen for changes from other tabs
-    useEffect(() => {
-        const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === 'portfolioData' && e.newValue) setPortfolio(JSON.parse(e.newValue));
-            if (e.key === 'servicesData' && e.newValue) setServices(JSON.parse(e.newValue));
-            if (e.key === 'aboutData' && e.newValue) setAbout(JSON.parse(e.newValue));
-            if (e.key === 'contactData' && e.newValue) setContact(JSON.parse(e.newValue));
-        };
-
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
-    }, []);
-
     // Auth Functions
     const login = (id: string, pass: string) => {
         if (id === adminId && pass === adminPass) {

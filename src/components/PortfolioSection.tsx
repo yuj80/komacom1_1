@@ -18,7 +18,7 @@ const PortfolioSection = () => {
                     {portfolio.map((project) => (
                         <div
                             key={project.id}
-                            className={`group relative h-[400px] w-[600px] md:h-[600px] md:w-[800px] overflow-hidden rounded-3xl bg-gradient-to-br ${project.color} shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[0.98]`}
+                            className={`group relative h-[400px] w-[85vw] md:h-[600px] md:w-[800px] flex-shrink-0 overflow-hidden rounded-3xl bg-gradient-to-br ${project.color} shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[0.98]`}
                         >
                             <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center text-white">
                                 <h3 className="text-4xl md:text-6xl font-black drop-shadow-md">{project.title}</h3>

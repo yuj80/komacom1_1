@@ -36,7 +36,7 @@ const FluidMesh = () => {
 const HeroCanvas = () => {
     return (
         <div className="w-full h-screen absolute top-0 left-0 -z-10 bg-white">
-            <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+            <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={[1, 2]}>
                 <ambientLight intensity={0.8} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
                 <pointLight position={[-10, -10, -10]} intensity={1} color="#3b82f6" />
