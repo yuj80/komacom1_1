@@ -1,6 +1,6 @@
 import { useAdmin } from '../context/AdminContext';
 import { motion } from 'framer-motion';
-import { Tv, MonitorPlay, MousePointer2, Mic2, Clapperboard, MonitorSmartphone } from 'lucide-react';
+import { Tv, MousePointer2, Mic2, Clapperboard, MonitorSmartphone } from 'lucide-react';
 
 const ServicesSection = () => {
     const { services } = useAdmin();
@@ -38,8 +38,6 @@ const ServicesSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-4 md:grid-rows-2 gap-6 h-auto md:h-[800px]">
                     {services.map((service, index) => {
                         // Dynamic layout based on index/id for variety, similar to original design
-                        const isLarge = index === 0; // First item large
-                        const isWide = index === 1; // Second item wide
 
                         // We will map based on the original specialized layout logic roughly
                         // But since we have dynamic data, we'll try to fit them into the grid.
