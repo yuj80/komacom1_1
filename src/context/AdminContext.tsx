@@ -104,46 +104,51 @@ const INITIAL_CONTACT: ContactData = {
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    // Auth State
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [adminId, setAdminId] = useState<string>('admin');
-    const [adminPass, setAdminPass] = useState<string>('1111');
+    // Data State - Lazy Initialization to prevent overwriting storage with defaults on mount
+    const [portfolio, setPortfolio] = useState<PortfolioItem[]>(() => {
+        const stored = localStorage.getItem('portfolioData');
+        return stored ? JSON.parse(stored) : INITIAL_PORTFOLIO;
+    });
+    const [services, setServices] = useState<ServiceItem[]>(() => {
+        const stored = localStorage.getItem('servicesData');
+        return stored ? JSON.parse(stored) : INITIAL_SERVICES;
+    });
+    const [about, setAbout] = useState<AboutData>(() => {
+        const stored = localStorage.getItem('aboutData');
+        return stored ? JSON.parse(stored) : INITIAL_ABOUT;
+    });
+    const [contact, setContact] = useState<ContactData>(() => {
+        const stored = localStorage.getItem('contactData');
+        return stored ? JSON.parse(stored) : INITIAL_CONTACT;
+    });
 
-    // Data State
-    const [portfolio, setPortfolio] = useState<PortfolioItem[]>(INITIAL_PORTFOLIO);
-    const [services, setServices] = useState<ServiceItem[]>(INITIAL_SERVICES);
-    const [about, setAbout] = useState<AboutData>(INITIAL_ABOUT);
-    const [contact, setContact] = useState<ContactData>(INITIAL_CONTACT);
+    // Auth State - Lazy Init
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+        return localStorage.getItem('isAdmin') === 'true';
+    });
+    const [adminId, setAdminId] = useState<string>(() => localStorage.getItem('adminId') || 'admin');
+    const [adminPass, setAdminPass] = useState<string>(() => localStorage.getItem('adminPass') || '1111');
 
-    // Load from LocalStorage on mount
-    useEffect(() => {
-        const storedAuth = localStorage.getItem('isAdmin');
-        if (storedAuth === 'true') setIsAuthenticated(true);
-
-        const storedId = localStorage.getItem('adminId');
-        if (storedId) setAdminId(storedId);
-
-        const storedPass = localStorage.getItem('adminPass');
-        if (storedPass) setAdminPass(storedPass);
-
-        const storedPortfolio = localStorage.getItem('portfolioData');
-        if (storedPortfolio) setPortfolio(JSON.parse(storedPortfolio));
-
-        const storedServices = localStorage.getItem('servicesData');
-        if (storedServices) setServices(JSON.parse(storedServices));
-
-        const storedAbout = localStorage.getItem('aboutData');
-        if (storedAbout) setAbout(JSON.parse(storedAbout));
-
-        const storedContact = localStorage.getItem('contactData');
-        if (storedContact) setContact(JSON.parse(storedContact));
-    }, []);
-
-    // Sync to LocalStorage
+    // Sync to LocalStorage (Run whenever state changes)
     useEffect(() => localStorage.setItem('portfolioData', JSON.stringify(portfolio)), [portfolio]);
     useEffect(() => localStorage.setItem('servicesData', JSON.stringify(services)), [services]);
     useEffect(() => localStorage.setItem('aboutData', JSON.stringify(about)), [about]);
     useEffect(() => localStorage.setItem('contactData', JSON.stringify(contact)), [contact]);
+
+    // Listen for changes from other tabs (Cross-tab sync)
+    useEffect(() => {
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === 'portfolioData' && e.newValue) setPortfolio(JSON.parse(e.newValue));
+            if (e.key === 'servicesData' && e.newValue) setServices(JSON.parse(e.newValue));
+            if (e.key === 'aboutData' && e.newValue) setAbout(JSON.parse(e.newValue));
+            if (e.key === 'contactData' && e.newValue) setContact(JSON.parse(e.newValue));
+            // Auth sync
+            if (e.key === 'isAdmin') setIsAuthenticated(e.newValue === 'true');
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
 
     // Listen for changes from other tabs
     useEffect(() => {
