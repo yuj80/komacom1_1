@@ -30,19 +30,19 @@ const IntroSection = () => {
             <div className="flex flex-col space-y-4 opacity-100">
                 <motion.div
                     style={{ x: xLeft }}
-                    className="text-6xl md:text-9xl font-black whitespace-nowrap text-zinc-200"
+                    className="text-4xl md:text-9xl font-black whitespace-nowrap text-zinc-200"
                 >
                     아이디어부터 TV 광고까지 라디오에서 목소리로
                 </motion.div>
                 <motion.div
                     style={{ x: xRight }}
-                    className="text-6xl md:text-9xl font-black whitespace-nowrap text-zinc-900"
+                    className="text-4xl md:text-9xl font-black whitespace-nowrap text-zinc-900"
                 >
                     크리에이티브에서 임팩트로 디지털 웨이브
                 </motion.div>
                 <motion.div
                     style={{ x: xLeft }}
-                    className="text-6xl md:text-9xl font-black whitespace-nowrap text-zinc-200"
+                    className="text-4xl md:text-9xl font-black whitespace-nowrap text-zinc-200"
                 >
                     새로운 차원을 경험하세요
                 </motion.div>

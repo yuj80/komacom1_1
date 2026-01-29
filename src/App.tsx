@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import Layout from './layout/Layout';
 
 import Home from './pages/Home';
@@ -42,6 +43,7 @@ function App() {
   return (
     <AdminProvider>
       <Router>
+        <ScrollToTop />
         <AppContent />
       </Router>
     </AdminProvider>

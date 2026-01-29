@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { useAdmin } from '../context/AdminContext';
 import { PlayCircle } from 'lucide-react';
 
@@ -7,7 +8,21 @@ const categories = ['전체', 'TV', 'Radio', 'PPL', 'Digital'];
 
 const Portfolio: React.FC = () => {
     const { portfolio } = useAdmin();
-    const [filter, setFilter] = useState('전체');
+    const [searchParams] = useSearchParams();
+    const initialFilter = searchParams.get('category') || '전체';
+    const [filter, setFilter] = useState(initialFilter);
+
+    // Sync state with URL when URL changes (e.g. navigation from home)
+    useEffect(() => {
+        const categoryParam = searchParams.get('category');
+        if (categoryParam && categories.includes(categoryParam)) {
+            setFilter(categoryParam);
+        }
+    }, [searchParams]);
+
+    const handleFilterChange = (cat: string) => {
+        setFilter(cat);
+    };
 
     const filteredProjects = filter === '전체'
         ? portfolio
@@ -27,7 +42,7 @@ const Portfolio: React.FC = () => {
                     {categories.map((cat) => (
                         <button
                             key={cat}
-                            onClick={() => setFilter(cat)}
+                            onClick={() => handleFilterChange(cat)}
                             className={`px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-sm ${filter === cat
                                 ? 'bg-black text-white hover:bg-zinc-800'
                                 : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-gray-50 hover:text-black'

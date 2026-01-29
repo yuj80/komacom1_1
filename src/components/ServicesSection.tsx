@@ -1,9 +1,72 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAdmin } from '../context/AdminContext';
-import { motion } from 'framer-motion';
-import { Tv, MousePointer2, Mic2, Clapperboard, MonitorSmartphone } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tv, MousePointer2, Mic2, Clapperboard, MonitorSmartphone, X, ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react';
+
+// Sub-item Component for Hover Effect
+const SubServiceItem = ({ item }: { item: string, index?: number }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+        <motion.div
+            layout
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
+            className={`relative overflow-hidden rounded-2xl border transition-all duration-300 cursor-default
+                ${isHovered
+                    ? 'bg-blue-50/50 border-blue-200 shadow-md scale-[1.02]'
+                    : 'bg-gray-50 border-gray-100'
+                }`}
+        >
+            <motion.div layout className="p-4 flex items-center gap-4 relative z-10">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300
+                    ${isHovered
+                        ? 'bg-blue-600 text-white rotate-12'
+                        : 'bg-white text-zinc-300 border border-zinc-200'
+                    }`}>
+                    <CheckCircle2 size={isHovered ? 20 : 18} />
+                </div>
+
+                <h5 className={`text-lg font-bold transition-colors duration-300 ${isHovered ? 'text-blue-900' : 'text-zinc-700'}`}>
+                    {item}
+                </h5>
+
+                <div className="ml-auto">
+                    <ChevronRight size={16} className={`text-zinc-400 transition-transform duration-300 ${isHovered ? 'rotate-90 text-blue-500' : ''}`} />
+                </div>
+            </motion.div>
+
+            <AnimatePresence>
+                {isHovered && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
+                    >
+                        <div className="px-4 pb-5 pl-[4.5rem]">
+                            <p className="text-zinc-600 text-sm leading-relaxed">
+                                고객의 목표 달성을 위해 <strong>{item}</strong> 영역에서<br />
+                                차별화된 전략과 크리에이티브를 제공합니다.
+                            </p>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Decorative background accent on hover */}
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100/20 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 transition-opacity duration-300 pointer-events-none
+                ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+            />
+        </motion.div>
+    );
+};
 
 const ServicesSection = () => {
     const { services } = useAdmin();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const navigate = useNavigate();
 
     const getIcon = (id: number) => {
         switch (id) {
@@ -26,7 +89,7 @@ const ServicesSection = () => {
     };
 
     return (
-        <section className="bg-white py-32 px-6">
+        <section className="bg-white py-32 px-6 relative z-10">
             <div className="container mx-auto">
                 <div className="mb-20 text-center">
                     <h2 className="text-4xl md:text-6xl font-bold mb-6 text-zinc-900">서비스 소개</h2>
@@ -37,12 +100,6 @@ const ServicesSection = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-4 md:grid-rows-2 gap-6 h-auto md:h-[800px]">
                     {services.map((service, index) => {
-                        // Dynamic layout based on index/id for variety, similar to original design
-
-                        // We will map based on the original specialized layout logic roughly
-                        // But since we have dynamic data, we'll try to fit them into the grid.
-                        // The original had 4 items. We assume 4 items in standard data.
-
                         let gridClass = "col-span-1 md:col-span-1 md:row-span-1";
                         if (index === 0) gridClass = "col-span-1 md:col-span-2 md:row-span-2 bg-gray-50";
                         else if (index === 1) gridClass = "col-span-1 md:col-span-2 md:row-span-1 bg-zinc-900 text-white";
@@ -55,8 +112,10 @@ const ServicesSection = () => {
                         return (
                             <motion.div
                                 key={service.id}
+                                layoutId={`card-${service.id}`}
+                                onClick={() => setSelectedId(service.id)}
                                 whileHover={{ scale: 0.98 }}
-                                className={`${gridClass} rounded-3xl p-8 flex flex-col justify-between border border-zinc-100 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all`}
+                                className={`${gridClass} rounded-3xl p-8 flex flex-col justify-between border border-zinc-100 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all cursor-pointer`}
                             >
                                 {index === 0 && (
                                     <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -72,8 +131,18 @@ const ServicesSection = () => {
                                     )}
                                     {index === 3 && <MousePointer2 className="text-white mb-4" size={32} />}
 
-                                    <h3 className={`text-2xl md:text-3xl font-bold ${textColor} mb-2`}>{service.title}</h3>
-                                    <p className={`${descColor} text-sm md:text-base`}>{service.description}</p>
+                                    <motion.h3
+                                        layoutId={`title-${service.id}`}
+                                        className={`text-2xl md:text-3xl font-bold ${textColor} mb-2`}
+                                    >
+                                        {service.title}
+                                    </motion.h3>
+                                    <motion.p
+                                        layoutId={`desc-${service.id}`}
+                                        className={`${descColor} text-sm md:text-base`}
+                                    >
+                                        {service.description}
+                                    </motion.p>
                                 </div>
 
                                 {(index === 0) && (
@@ -86,16 +155,113 @@ const ServicesSection = () => {
                                     </div>
                                 )}
 
-                                {index === 1 && (
-                                    <div className="absolute right-0 top-1/2 -translate-y-1/2 -mr-10">
-                                        <div className="w-40 h-24 bg-gradient-to-t from-purple-500/20 to-transparent rounded-lg border border-purple-500/30" />
-                                    </div>
-                                )}
+
                             </motion.div>
                         );
                     })}
                 </div>
             </div>
+
+            {/* EXPANDED VIEW */}
+            <AnimatePresence>
+                {selectedId && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-10">
+                        {/* BACKDROP */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedId(null)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        />
+
+                        {/* CARD */}
+                        {services.filter(s => s.id === selectedId).map((service) => {
+                            // Re-calculate basic styles to match the original card for smooth transition
+                            // Or default to a nice white/clean detailed view regardless of original card color?
+                            // Let's keep the theme consistant but make it cleaner for text reading.
+                            // Actually better to have a consistent "Modal" style for readability, 
+                            // maybe inheriting some accent colors.
+
+                            // Let's use a standard clean modal look but with dynamic accents
+
+                            return (
+                                <motion.div
+                                    key={service.id}
+                                    layoutId={`card-${service.id}`}
+                                    className="w-full max-w-4xl max-h-[90vh] bg-white rounded-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row"
+                                >
+                                    {/* Close Button */}
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); setSelectedId(null); }}
+                                        className="absolute top-6 right-6 z-20 p-2 bg-black/10 hover:bg-black/20 rounded-full transition-colors"
+                                    >
+                                        <X size={24} className="text-zinc-900" />
+                                    </button>
+
+                                    {/* Left Panel: Visual / Title */}
+                                    <div className={`w-full md:w-2/5 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden ${service.id === 4 ? 'bg-gradient-to-br from-blue-600 to-blue-800 text-white' :
+                                        service.id === 2 ? 'bg-zinc-900 text-white' :
+                                            'bg-gray-50 text-zinc-900'
+                                        }`}>
+                                        <div className="relative z-10">
+                                            <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-8 border border-white/20">
+                                                {getSmallIcon(service.id)}
+                                            </div>
+                                            <motion.h3
+                                                layoutId={`title-${service.id}`}
+                                                className="text-3xl md:text-5xl font-bold mb-6 leading-tight"
+                                            >
+                                                {service.title}
+                                            </motion.h3>
+                                            <motion.p
+                                                layoutId={`desc-${service.id}`}
+                                                className="text-lg opacity-80"
+                                            >
+                                                {service.description}
+                                            </motion.p>
+                                        </div>
+
+                                        {/* Background Decoration */}
+                                        <div className="absolute -bottom-10 -right-10 opacity-10">
+                                            {getIcon(service.id)}
+                                        </div>
+                                    </div>
+
+                                    {/* Right Panel: Details */}
+                                    <motion.div
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                        className="w-full md:w-3/5 p-8 md:p-12 overflow-y-auto bg-white"
+                                    >
+                                        <h4 className="text-xl font-bold text-zinc-900 mb-6 flex items-center gap-2">
+                                            <div className="w-1 h-6 bg-blue-600 rounded-full" />
+                                            상세 서비스 항목
+                                        </h4>
+
+                                        <div className="grid grid-cols-1 gap-4 mb-10">
+                                            {service.subItems.map((item, i) => (
+                                                <SubServiceItem key={i} item={item} index={i} />
+                                            ))}
+                                        </div>
+
+                                        <div className="mt-auto pt-6 border-t border-gray-100 flex justify-end">
+                                            <button
+                                                onClick={() => navigate('/contact')}
+                                                className="flex items-center gap-2 text-zinc-900 font-bold hover:text-blue-600 transition-colors group"
+                                            >
+                                                문의하기
+                                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                )}
+            </AnimatePresence>
         </section>
     );
 };

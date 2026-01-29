@@ -29,8 +29,8 @@ const Navbar: React.FC = () => {
                 } flex items-center justify-between px-6 md:px-12`}
         >
             {/* Logo */}
-            <Link to="/" className="text-2xl font-bold tracking-tighter text-zinc-900 z-50 relative">
-                KOMACOM
+            <Link to="/" className="z-50 relative">
+                <img src="/logo.jpg" alt="KOMACOM" className="h-8 md:h-10 object-contain block mix-blend-multiply" />
             </Link>
 
             {/* Desktop Menu */}

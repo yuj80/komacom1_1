@@ -12,7 +12,11 @@ const Footer: React.FC = () => {
 
                 {/* Left: Branding & CTA */}
                 <div>
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-900">
+                    <div className="mb-8">
+                        <img src="/logo.jpg" alt="KOMACOM" className="h-10 md:h-12 object-contain mix-blend-multiply" />
+                    </div>
+
+                    <h2 className="text-3xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-900 break-keep">
                         {contact.introText.split('\\n').map((line, i) => (
                             <React.Fragment key={i}>
                                 {line}

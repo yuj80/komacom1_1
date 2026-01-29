@@ -1,9 +1,11 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAdmin } from '../context/AdminContext';
 
 const PortfolioSection = () => {
     const { portfolio } = useAdmin();
+    const navigate = useNavigate();
     const targetRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
@@ -23,7 +25,10 @@ const PortfolioSection = () => {
                             <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center text-white">
                                 <h3 className="text-4xl md:text-6xl font-black drop-shadow-md">{project.title}</h3>
                                 <p className="mt-4 text-xl font-medium opacity-90">{project.category}</p>
-                                <button className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-bold text-black opacity-0 transition-opacity duration-300 group-hover:opacity-100 shadow-md transform translate-y-4 group-hover:translate-y-0">
+                                <button
+                                    onClick={() => navigate(`/portfolio?category=${project.category}`)}
+                                    className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-bold text-black opacity-0 transition-opacity duration-300 group-hover:opacity-100 shadow-md transform translate-y-4 group-hover:translate-y-0"
+                                >
                                     프로젝트 보기
                                 </button>
                             </div>

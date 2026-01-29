@@ -98,7 +98,7 @@ const INITIAL_CONTACT: ContactData = {
     introText: '프로젝트를 시작할 준비가 되셨나요? 언제든 문의해주세요.',
     address: '서울시 영등포구 국회대로 66길 23, 산정빌딩 4층',
     email: 'help@komacom.co.kr | ad@komacom.co.kr',
-    phone: '02-1234-5678'
+    phone: '02-785-5563'
 };
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
