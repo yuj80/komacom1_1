@@ -41,6 +41,7 @@ interface AdminContextType {
     isAuthenticated: boolean;
     login: (id: string, pass: string) => boolean;
     logout: () => void;
+    updateCredentials: (newId: string, newPass: string) => void;
 
     // Portfolio
     portfolio: PortfolioItem[];
@@ -56,6 +57,7 @@ interface AdminContextType {
     about: AboutData;
     updateAbout: (data: AboutData) => void;
     addHistory: (item: Omit<HistoryItem, 'id'>) => void;
+    updateHistory: (item: HistoryItem) => void;
     deleteHistory: (id: number) => void;
 
     // Contact
@@ -65,34 +67,34 @@ interface AdminContextType {
 
 // --- Initial Data ---
 const INITIAL_PORTFOLIO: PortfolioItem[] = [
-    { id: 1, title: 'Summer Campaign', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600' },
-    { id: 2, title: 'Morning Show', category: 'Radio', type: 'image', url: '', color: 'from-cyan-400 to-blue-500' },
-    { id: 3, title: 'Drama Integration', category: 'PPL', type: 'image', url: '', color: 'from-purple-500 to-pink-500' },
-    { id: 4, title: 'Tech Launch', category: 'TV', type: 'image', url: '', color: 'from-orange-400 to-red-500' },
-    { id: 5, title: 'Audio Book', category: 'Radio', type: 'image', url: '', color: 'from-purple-500 to-pink-500' },
-    { id: 6, title: 'Web Series', category: 'Digital', type: 'image', url: '', color: 'from-pink-500 to-rose-500' },
+    { id: 1, title: '여름 캠페인', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600' },
+    { id: 2, title: '모닝 쇼', category: 'Radio', type: 'image', url: '', color: 'from-cyan-400 to-blue-500' },
+    { id: 3, title: '드라마 제작지원', category: 'PPL', type: 'image', url: '', color: 'from-purple-500 to-pink-500' },
+    { id: 4, title: '테크 제품 런칭', category: 'TV', type: 'image', url: '', color: 'from-orange-400 to-red-500' },
+    { id: 5, title: '오디오북', category: 'Radio', type: 'image', url: '', color: 'from-purple-500 to-pink-500' },
+    { id: 6, title: '웹 드라마', category: 'Digital', type: 'image', url: '', color: 'from-pink-500 to-rose-500' },
 ];
 
 const INITIAL_SERVICES: ServiceItem[] = [
-    { id: 1, title: 'Broadcast Media', description: 'Comprehensive planning and execution for TV commercials. From storyboard to final broadcast.', subItems: ['TV Commercials', 'Cable TV Ads', 'IPTV Solutions'] },
-    { id: 2, title: 'Radio Marketing', description: 'Engaging audio content that captures listeners. Voice casting, recording, and media buying.', subItems: ['Radio CM', 'Podcast Ads', 'Audio Branding'] },
-    { id: 3, title: 'Sponsorship & PPL', description: 'Strategic product placement in drama and variety shows to enhance brand visibility naturally.', subItems: ['Drama PPL', 'Variety Show Sponsorship', 'Virtual Advertising'] },
-    { id: 4, title: 'Digital & Interactive', description: 'Full-funnel digital marketing strategies including SNS, YouTube, and interactive web experiences.', subItems: ['YouTube Content', 'Social Media Management', 'Web Development'] },
+    { id: 1, title: '방송 광고 (Broadcast Media)', description: 'TV 광고를 위한 종합적인 기획 및 실행. 스토리보드부터 최종 송출까지 책임집니다.', subItems: ['TV CF', '케이블 TV 광고', 'IPTV 솔루션'] },
+    { id: 2, title: '라디오 마케팅 (Radio Marketing)', description: '청취자의 귀를 사로잡는 매력적인 오디오 콘텐츠. 성우 캐스팅, 녹음, 매체 구매까지.', subItems: ['라디오 CM', '팟캐스트 광고', '오디오 브랜딩'] },
+    { id: 3, title: '스폰서십 & PPL', description: '드라마 및 예능 프로그램 내 전략적 제품 노출로 자연스러운 브랜드 인지도 상승 효과.', subItems: ['드라마 PPL', '예능 프로그램 협찬', '가상 광고'] },
+    { id: 4, title: '디지털 & 인터랙티브', description: 'SNS, 유튜브, 인터랙티브 웹 경험을 포함한 풀퍼널 디지털 마케팅 전략.', subItems: ['유튜브 콘텐츠', '소셜 미디어 운영', '웹 개발'] },
 ];
 
 const INITIAL_ABOUT: AboutData = {
-    description: 'We are a creative agency that believes in the power of ideas to transform businesses.',
+    description: '우리는 아이디어의 힘으로 비즈니스를 변화시킬 수 있다고 믿는 크리에이티브 에이전시입니다.',
     history: [
-        { id: 1, year: '2026', title: 'Global Expansion', desc: 'Opened new branches in Asia.' },
-        { id: 2, year: '2024', title: 'Top Agency Award', desc: 'Won Best Digital Agency Award.' },
-        { id: 3, year: '2020', title: 'Digital Transformation', desc: 'Shifted focus to comprehensive digital solutions.' },
-        { id: 4, year: '2014', title: 'Foundation', desc: 'Komacom established.' },
+        { id: 1, year: '2026', title: '글로벌 확장', desc: '아시아 주요 거점 지사 설립' },
+        { id: 2, year: '2024', title: '최우수 에이전시 수상', desc: '베스트 디지털 에이전시 어워드 수상' },
+        { id: 3, year: '2020', title: '디지털 트랜스포메이션', desc: '종합 디지털 솔루션으로 사업 영역 확장' },
+        { id: 4, year: '2014', title: '설립', desc: '코마커뮤니케이션(KOMACOM) 설립' },
     ]
 };
 
 const INITIAL_CONTACT: ContactData = {
-    introText: 'Ready to start your project? Send us a message.',
-    address: 'Seoul, Yeongdeungpo-gu, National Assembly-daero 66-gil 23, Sanjeong Building 4F',
+    introText: '프로젝트를 시작할 준비가 되셨나요? 언제든 문의해주세요.',
+    address: '서울시 영등포구 국회대로 66길 23, 산정빌딩 4층',
     email: 'help@komacom.co.kr | ad@komacom.co.kr',
     phone: '02-1234-5678'
 };
@@ -102,6 +104,8 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     // Auth State
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [adminId, setAdminId] = useState<string>('admin');
+    const [adminPass, setAdminPass] = useState<string>('1111');
 
     // Data State
     const [portfolio, setPortfolio] = useState<PortfolioItem[]>(INITIAL_PORTFOLIO);
@@ -113,6 +117,12 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     useEffect(() => {
         const storedAuth = localStorage.getItem('isAdmin');
         if (storedAuth === 'true') setIsAuthenticated(true);
+
+        const storedId = localStorage.getItem('adminId');
+        if (storedId) setAdminId(storedId);
+
+        const storedPass = localStorage.getItem('adminPass');
+        if (storedPass) setAdminPass(storedPass);
 
         const storedPortfolio = localStorage.getItem('portfolioData');
         if (storedPortfolio) setPortfolio(JSON.parse(storedPortfolio));
@@ -135,7 +145,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Auth Functions
     const login = (id: string, pass: string) => {
-        if (id === 'admin' && pass === '1111') {
+        if (id === adminId && pass === adminPass) {
             setIsAuthenticated(true);
             localStorage.setItem('isAdmin', 'true');
             return true;
@@ -146,6 +156,15 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const logout = () => {
         setIsAuthenticated(false);
         localStorage.removeItem('isAdmin');
+    };
+
+    const updateCredentials = (newId: string, newPass: string) => {
+        setAdminId(newId);
+        setAdminPass(newPass);
+        localStorage.setItem('adminId', newId);
+        localStorage.setItem('adminPass', newPass);
+        alert('계정 정보가 변경되었습니다. 다시 로그인해주세요.');
+        logout();
     };
 
     // Portfolio Functions
@@ -180,6 +199,13 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         }));
     };
 
+    const updateHistory = (updatedItem: HistoryItem) => {
+        setAbout(prev => ({
+            ...prev,
+            history: prev.history.map(item => item.id === updatedItem.id ? updatedItem : item).sort((a, b) => parseInt(b.year) - parseInt(a.year))
+        }));
+    };
+
     const deleteHistory = (id: number) => {
         setAbout(prev => ({
             ...prev,
@@ -194,10 +220,10 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     return (
         <AdminContext.Provider value={{
-            isAuthenticated, login, logout,
+            isAuthenticated, login, logout, updateCredentials,
             portfolio, addPortfolio, updatePortfolio, deletePortfolio,
             services, updateService,
-            about, updateAbout, addHistory, deleteHistory,
+            about, updateAbout, addHistory, deleteHistory, updateHistory,
             contact, updateContact
         }}>
             {children}

@@ -3,13 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAdmin } from '../context/AdminContext';
 import { PlayCircle } from 'lucide-react';
 
-const categories = ['All', 'TV', 'Radio', 'PPL', 'Digital'];
+const categories = ['전체', 'TV', 'Radio', 'PPL', 'Digital'];
 
 const Portfolio: React.FC = () => {
     const { portfolio } = useAdmin();
-    const [filter, setFilter] = useState('All');
+    const [filter, setFilter] = useState('전체');
 
-    const filteredProjects = filter === 'All'
+    const filteredProjects = filter === '전체'
         ? portfolio
         : portfolio.filter(p => p.category === filter);
 
@@ -20,7 +20,7 @@ const Portfolio: React.FC = () => {
     return (
         <div className="bg-white text-zinc-900 min-h-screen pt-32 pb-20">
             <div className="container mx-auto px-6">
-                <h1 className="text-5xl md:text-7xl font-bold mb-12 text-center text-zinc-900">Portfolio</h1>
+                <h1 className="text-5xl md:text-7xl font-bold mb-12 text-center text-zinc-900">포트폴리오</h1>
 
                 {/* Filter */}
                 <div className="flex justify-center space-x-4 mb-20 flex-wrap gap-y-4">
@@ -29,8 +29,8 @@ const Portfolio: React.FC = () => {
                             key={cat}
                             onClick={() => setFilter(cat)}
                             className={`px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-sm ${filter === cat
-                                    ? 'bg-black text-white hover:bg-zinc-800'
-                                    : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-gray-50 hover:text-black'
+                                ? 'bg-black text-white hover:bg-zinc-800'
+                                : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-gray-50 hover:text-black'
                                 }`}
                         >
                             {cat}

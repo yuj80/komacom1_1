@@ -18,7 +18,7 @@ const Business: React.FC = () => {
     return (
         <div className="bg-white text-zinc-900 min-h-screen pt-32 pb-20">
             <div className="container mx-auto px-6">
-                <h1 className="text-5xl md:text-7xl font-bold mb-20 text-center text-zinc-900">Business Areas</h1>
+                <h1 className="text-5xl md:text-7xl font-bold mb-20 text-center text-zinc-900">사업 영역</h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {services.map((service) => (

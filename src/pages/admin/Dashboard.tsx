@@ -1,30 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useAdmin, type PortfolioItem, type HistoryItem } from '../../context/AdminContext';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Trash2, PlayCircle, Image as ImageIcon, Save, Building2, Phone as PhoneIcon, LayoutGrid, Layers } from 'lucide-react';
+import { LogOut, Plus, Trash2, PlayCircle, Image as ImageIcon, Save, Building2, Phone as PhoneIcon, LayoutGrid, Layers, Settings, Edit2, X } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
     const {
         isAuthenticated, logout,
-        portfolio, addPortfolio, deletePortfolio,
+        portfolio, addPortfolio, deletePortfolio, updatePortfolio,
         services, updateService,
-        about, updateAbout, addHistory, deleteHistory,
-        contact, updateContact
+        about, updateAbout, addHistory, deleteHistory, updateHistory,
+        contact, updateContact,
+        updateCredentials
     } = useAdmin();
 
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<'portfolio' | 'services' | 'about' | 'contact'>('portfolio');
+    const [activeTab, setActiveTab] = useState<'portfolio' | 'services' | 'about' | 'contact' | 'settings'>('portfolio');
 
     // New Item States
     const [isAddingPortfolio, setIsAddingPortfolio] = useState(false);
+    const [editingPortfolioId, setEditingPortfolioId] = useState<number | null>(null);
     const [newPortfolio, setNewPortfolio] = useState<Partial<PortfolioItem>>({
         title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600'
     });
 
     const [isAddingHistory, setIsAddingHistory] = useState(false);
+    const [editingHistoryId, setEditingHistoryId] = useState<number | null>(null);
     const [newHistory, setNewHistory] = useState<Partial<HistoryItem>>({
         year: '2026', title: '', desc: ''
     });
+
+    // Settings State
+    const [newAdminId, setNewAdminId] = useState('');
+    const [newAdminPass, setNewAdminPass] = useState('');
 
     // Check auth
     useEffect(() => {
@@ -38,7 +45,12 @@ const Dashboard: React.FC = () => {
 
     const handleAddPortfolio = () => {
         if (newPortfolio.title && newPortfolio.url) {
-            addPortfolio(newPortfolio as Omit<PortfolioItem, 'id'>);
+            if (editingPortfolioId) {
+                updatePortfolio({ ...newPortfolio, id: editingPortfolioId } as PortfolioItem);
+                setEditingPortfolioId(null);
+            } else {
+                addPortfolio(newPortfolio as Omit<PortfolioItem, 'id'>);
+            }
             setIsAddingPortfolio(false);
             setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600' });
         } else {
@@ -46,14 +58,32 @@ const Dashboard: React.FC = () => {
         }
     };
 
+    const startEditPortfolio = (item: PortfolioItem) => {
+        setNewPortfolio(item);
+        setEditingPortfolioId(item.id);
+        setIsAddingPortfolio(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const handleAddHistory = () => {
         if (newHistory.year && newHistory.title && newHistory.desc) {
-            addHistory(newHistory as Omit<HistoryItem, 'id'>);
+            if (editingHistoryId) {
+                updateHistory({ ...newHistory, id: editingHistoryId } as HistoryItem);
+                setEditingHistoryId(null);
+            } else {
+                addHistory(newHistory as Omit<HistoryItem, 'id'>);
+            }
             setIsAddingHistory(false);
             setNewHistory({ year: '2026', title: '', desc: '' });
         } else {
             alert('연도, 제목, 내용은 필수입니다.');
         }
+    };
+
+    const startEditHistory = (item: HistoryItem) => {
+        setNewHistory(item);
+        setEditingHistoryId(item.id);
+        setIsAddingHistory(true);
     };
 
     return (
@@ -98,6 +128,12 @@ const Dashboard: React.FC = () => {
                         >
                             <PhoneIcon size={20} className="mr-3" /> 문의하기 (Contact)
                         </button>
+                        <button
+                            onClick={() => setActiveTab('settings')}
+                            className={`w-full text-left px-4 py-3 rounded-xl flex items-center font-bold transition-all ${activeTab === 'settings' ? 'bg-blue-50 text-blue-600' : 'text-zinc-500 hover:bg-zinc-50'}`}
+                        >
+                            <Settings size={20} className="mr-3" /> 설정 (Settings)
+                        </button>
                     </nav>
                 </aside>
 
@@ -110,16 +146,21 @@ const Dashboard: React.FC = () => {
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-2xl font-bold text-zinc-900">포트폴리오 관리</h2>
                                 <button
-                                    onClick={() => setIsAddingPortfolio(!isAddingPortfolio)}
+                                    onClick={() => {
+                                        setIsAddingPortfolio(!isAddingPortfolio);
+                                        setEditingPortfolioId(null);
+                                        setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600' });
+                                    }}
                                     className="bg-blue-600 text-white px-5 py-2.5 rounded-xl flex items-center hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 font-bold text-sm"
                                 >
-                                    <Plus size={18} className="mr-2" /> 새 프로젝트 추가
+                                    {isAddingPortfolio ? <X size={18} className="mr-2" /> : <Plus size={18} className="mr-2" />}
+                                    {isAddingPortfolio ? '취소' : '새 프로젝트 추가'}
                                 </button>
                             </div>
 
                             {isAddingPortfolio && (
                                 <div className="bg-white p-6 rounded-2xl shadow-lg mb-8 border border-zinc-100 ring-4 ring-blue-50/50">
-                                    <h3 className="font-bold mb-4 text-lg">새 프로젝트 등록</h3>
+                                    <h3 className="font-bold mb-4 text-lg">{editingPortfolioId ? '프로젝트 수정' : '새 프로젝트 등록'}</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                         <div className="col-span-1">
                                             <label className="block text-xs font-bold text-zinc-500 mb-1">제목</label>
@@ -147,8 +188,8 @@ const Dashboard: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="flex justify-end gap-2">
-                                        <button onClick={() => setIsAddingPortfolio(false)} className="px-4 py-2 text-zinc-500 hover:bg-zinc-100 rounded-lg">취소</button>
-                                        <button onClick={handleAddPortfolio} className="bg-black text-white px-6 py-2 rounded-lg font-bold">등록하기</button>
+                                        <button onClick={() => { setIsAddingPortfolio(false); setEditingPortfolioId(null); }} className="px-4 py-2 text-zinc-500 hover:bg-zinc-100 rounded-lg">취소</button>
+                                        <button onClick={handleAddPortfolio} className="bg-black text-white px-6 py-2 rounded-lg font-bold">{editingPortfolioId ? '수정하기' : '등록하기'}</button>
                                     </div>
                                 </div>
                             )}
@@ -159,6 +200,7 @@ const Dashboard: React.FC = () => {
                                         <div className={`h-40 bg-gradient-to-br ${item.color} flex items-center justify-center relative`}>
                                             {item.type === 'video' ? <PlayCircle className="text-white opacity-80" size={48} /> : <ImageIcon className="text-white opacity-80" size={48} />}
                                             <div className="absolute top-2 right-2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 p-2 rounded-lg backdrop-blur-sm">
+                                                <button onClick={() => startEditPortfolio(item)} className="text-white hover:text-blue-400 p-1"><Edit2 size={16} /></button>
                                                 <button onClick={() => deletePortfolio(item.id)} className="text-white hover:text-red-400 p-1"><Trash2 size={16} /></button>
                                             </div>
                                         </div>
@@ -231,21 +273,27 @@ const Dashboard: React.FC = () => {
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-xl font-bold text-zinc-900">연혁 관리</h3>
                                 <button
-                                    onClick={() => setIsAddingHistory(!isAddingHistory)}
-                                    className="bg-black text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-zinc-800"
+                                    onClick={() => {
+                                        setIsAddingHistory(!isAddingHistory);
+                                        setEditingHistoryId(null);
+                                        setNewHistory({ year: '2026', title: '', desc: '' });
+                                    }}
+                                    className="bg-black text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-zinc-800 flex items-center"
                                 >
-                                    + 연혁 추가
+                                    {isAddingHistory ? <X size={16} className="mr-2" /> : <Plus size={16} className="mr-2" />}
+                                    {isAddingHistory ? '취소' : '연혁 추가'}
                                 </button>
                             </div>
 
                             {isAddingHistory && (
                                 <div className="bg-zinc-100 p-6 rounded-xl mb-6 animate-in slide-in-from-top-2">
+                                    <h4 className="font-bold mb-4">{editingHistoryId ? '연혁 수정' : '새 연혁 등록'}</h4>
                                     <div className="grid grid-cols-6 gap-4 mb-4">
                                         <input className="col-span-1 p-2 rounded border" placeholder="연도 (2026)" value={newHistory.year} onChange={e => setNewHistory({ ...newHistory, year: e.target.value })} />
                                         <input className="col-span-2 p-2 rounded border" placeholder="제목" value={newHistory.title} onChange={e => setNewHistory({ ...newHistory, title: e.target.value })} />
                                         <input className="col-span-3 p-2 rounded border" placeholder="내용" value={newHistory.desc} onChange={e => setNewHistory({ ...newHistory, desc: e.target.value })} />
                                     </div>
-                                    <button onClick={handleAddHistory} className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">추가하기</button>
+                                    <button onClick={handleAddHistory} className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">{editingHistoryId ? '수정하기' : '추가하기'}</button>
                                 </div>
                             )}
 
@@ -259,9 +307,14 @@ const Dashboard: React.FC = () => {
                                                 <p className="text-sm text-zinc-500">{item.desc}</p>
                                             </div>
                                         </div>
-                                        <button onClick={() => deleteHistory(item.id)} className="text-zinc-300 hover:text-red-500 transition-colors">
-                                            <Trash2 size={20} />
-                                        </button>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => startEditHistory(item)} className="text-zinc-300 hover:text-blue-500 transition-colors">
+                                                <Edit2 size={20} />
+                                            </button>
+                                            <button onClick={() => deleteHistory(item.id)} className="text-zinc-300 hover:text-red-500 transition-colors">
+                                                <Trash2 size={20} />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -316,6 +369,54 @@ const Dashboard: React.FC = () => {
                                         <Save size={16} className="mr-2" />
                                         입력 즉시 자동으로 저장됩니다.
                                     </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- SETTINGS TAB --- */}
+                    {activeTab === 'settings' && (
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <h2 className="text-2xl font-bold mb-6 text-zinc-900">관리자 계정 설정</h2>
+                            <div className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-sm max-w-lg">
+                                <div className="space-y-6">
+                                    <div>
+                                        <label className="block text-sm font-bold text-zinc-700 mb-2">새 아이디</label>
+                                        <input
+                                            className="w-full border p-3 rounded-lg bg-zinc-50 focus:bg-white"
+                                            value={newAdminId}
+                                            onChange={(e) => setNewAdminId(e.target.value)}
+                                            placeholder="새로운 아이디 입력"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-zinc-700 mb-2">새 비밀번호</label>
+                                        <input
+                                            type="password"
+                                            className="w-full border p-3 rounded-lg bg-zinc-50 focus:bg-white"
+                                            value={newAdminPass}
+                                            onChange={(e) => setNewAdminPass(e.target.value)}
+                                            placeholder="새로운 비밀번호 입력"
+                                        />
+                                    </div>
+                                    <div className="pt-4">
+                                        <button
+                                            onClick={() => {
+                                                if (newAdminId && newAdminPass) {
+                                                    updateCredentials(newAdminId, newAdminPass);
+                                                } else {
+                                                    alert('아이디와 비밀번호를 모두 입력해주세요.');
+                                                }
+                                            }}
+                                            className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-zinc-800 transition-colors flex justify-center items-center"
+                                        >
+                                            <Save size={18} className="mr-2" />
+                                            변경사항 저장
+                                        </button>
+                                        <p className="text-center text-xs text-zinc-400 mt-4">
+                                            * 변경 시 자동으로 로그아웃됩니다.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

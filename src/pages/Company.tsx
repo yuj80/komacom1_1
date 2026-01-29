@@ -9,7 +9,7 @@ const Company: React.FC = () => {
         <div className="bg-white text-zinc-900 min-h-screen pb-32">
             {/* Header */}
             <div className="pt-32 pb-20 px-6 container mx-auto text-center">
-                <h1 className="text-5xl md:text-7xl font-bold mb-6 text-zinc-900">About Us</h1>
+                <h1 className="text-5xl md:text-7xl font-bold mb-6 text-zinc-900">회사 소개</h1>
                 <p className="text-xl text-zinc-500 max-w-2xl mx-auto whitespace-pre-line">
                     {about.description}
                 </p>
@@ -42,13 +42,19 @@ const Company: React.FC = () => {
             {/* Location */}
             <div className="container mx-auto px-6 mt-32">
                 <div className="bg-gray-50 border border-zinc-100 rounded-3xl p-8 md:p-16 text-center shadow-sm">
-                    <h2 className="text-3xl font-bold mb-8 text-zinc-900">Location</h2>
-                    <div className="w-full h-[400px] bg-zinc-200 rounded-xl flex items-center justify-center relative overflow-hidden">
-                        {/* Static Map Image Placeholder (for better visuals than just gray) */}
-                        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30 grayscale hover:grayscale-0 transition-all duration-700" />
-                        <span className="relative z-10 text-zinc-600 font-bold bg-white/80 px-6 py-2 rounded-full backdrop-blur-sm shadow-sm">
-                            Map API Integration Area
-                        </span>
+                    <h2 className="text-3xl font-bold mb-8 text-zinc-900">오시는 길</h2>
+                    <div className="w-full h-[400px] bg-zinc-200 rounded-xl overflow-hidden shadow-inner relative">
+                        <iframe
+                            title="Office Location"
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            scrolling="no"
+                            marginHeight={0}
+                            marginWidth={0}
+                            src="https://maps.google.com/maps?q=서울특별시+영등포구+국회대로+66길+23&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                            className="absolute inset-0 grayscale hover:grayscale-0 transition-all duration-700"
+                        />
                     </div>
                     <p className="mt-8 text-zinc-500 font-medium text-lg">
                         {contact.address}

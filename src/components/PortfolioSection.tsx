@@ -2,10 +2,10 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 
 const projects = [
-    { id: 1, title: 'TV CM', category: 'Video', color: 'from-blue-500 to-indigo-600' },
-    { id: 2, title: 'Radio Campaign', category: 'Audio', color: 'from-cyan-400 to-blue-500' },
-    { id: 3, title: 'Brand Film', category: 'Video', color: 'from-purple-500 to-pink-500' },
-    { id: 4, title: 'Social Media', category: 'Digital', color: 'from-orange-400 to-red-500' },
+    { id: 1, title: 'TV 광고', category: 'Video', color: 'from-blue-500 to-indigo-600' },
+    { id: 2, title: '라디오 캠페인', category: 'Audio', color: 'from-cyan-400 to-blue-500' },
+    { id: 3, title: '브랜드 필름', category: 'Video', color: 'from-purple-500 to-pink-500' },
+    { id: 4, title: '소셜 미디어', category: 'Digital', color: 'from-orange-400 to-red-500' },
 ];
 
 const PortfolioSection = () => {
@@ -29,7 +29,7 @@ const PortfolioSection = () => {
                                 <h3 className="text-4xl md:text-6xl font-black drop-shadow-md">{project.title}</h3>
                                 <p className="mt-4 text-xl font-medium opacity-90">{project.category}</p>
                                 <button className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-bold text-black opacity-0 transition-opacity duration-300 group-hover:opacity-100 shadow-md transform translate-y-4 group-hover:translate-y-0">
-                                    VIEW PROJECT
+                                    프로젝트 보기
                                 </button>
                             </div>
                         </div>
@@ -37,7 +37,7 @@ const PortfolioSection = () => {
                 </motion.div>
             </div>
             <div className="absolute bottom-10 left-10 text-zinc-400 font-medium">
-                SCROLL TO EXPLORE
+                스크롤하여 탐색
             </div>
         </section>
     );

@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
                     to="/contact"
                     className="px-5 py-2 rounded-full border border-black/10 text-zinc-900 text-xs font-semibold hover:bg-black hover:text-white transition-all"
                 >
-                    REQUEST
+                    문의하기
                 </Link>
             </div>
 

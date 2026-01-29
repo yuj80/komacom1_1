@@ -14,10 +14,10 @@ const IntroSection = () => {
     return (
         <div ref={containerRef} className="py-32 overflow-hidden bg-white text-zinc-900">
             <div className="container mx-auto px-6 mb-20 text-center">
-                <p className="text-blue-600 font-bold mb-4">OUR PHILOSOPHY</p>
+                <p className="text-blue-600 font-bold mb-4">우리의 철학</p>
                 <h2 className="text-3xl md:text-5xl font-bold leading-tight text-zinc-900">
-                    We bridge the gap between <br />
-                    Art and Technology.
+                    우리는 예술과 <br />
+                    기술의 간극을 잇습니다.
                 </h2>
             </div>
 
@@ -26,19 +26,19 @@ const IntroSection = () => {
                     style={{ x: xLeft }}
                     className="text-6xl md:text-9xl font-black whitespace-nowrap text-zinc-200"
                 >
-                    TV CM from Idea Radio to Voice
+                    아이디어부터 TV 광고까지 라디오에서 목소리로
                 </motion.div>
                 <motion.div
                     style={{ x: xRight }}
                     className="text-6xl md:text-9xl font-black whitespace-nowrap text-zinc-900"
                 >
-                    Creative to Impact Digital Wave
+                    크리에이티브에서 임팩트로 디지털 웨이브
                 </motion.div>
                 <motion.div
                     style={{ x: xLeft }}
                     className="text-6xl md:text-9xl font-black whitespace-nowrap text-zinc-200"
                 >
-                    Experience the New Dimension
+                    새로운 차원을 경험하세요
                 </motion.div>
             </div>
         </div>

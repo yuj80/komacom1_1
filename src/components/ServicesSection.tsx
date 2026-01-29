@@ -6,9 +6,9 @@ const ServicesSection = () => {
         <section className="bg-white py-32 px-6">
             <div className="container mx-auto">
                 <div className="mb-20 text-center">
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6 text-zinc-900">Our Services</h2>
+                    <h2 className="text-4xl md:text-6xl font-bold mb-6 text-zinc-900">서비스 소개</h2>
                     <p className="text-zinc-500 max-w-2xl mx-auto">
-                        We provide comprehensive advertising solutions across all media channels.
+                        모든 미디어 채널에 걸친 종합 광고 솔루션을 제공합니다.
                     </p>
                 </div>
 
@@ -26,14 +26,14 @@ const ServicesSection = () => {
                             <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-200">
                                 <Tv className="text-white" size={24} />
                             </div>
-                            <h3 className="text-3xl font-bold text-zinc-900 mb-2">Broadcast Media</h3>
-                            <p className="text-zinc-500">TV Commercials, Radio Campaigns, and Media Planning.</p>
+                            <h3 className="text-3xl font-bold text-zinc-900 mb-2">방송 미디어</h3>
+                            <p className="text-zinc-500">TV 광고, 라디오 캠페인, 그리고 미디어 기획.</p>
                         </div>
                         <div className="mt-10">
                             <ul className="space-y-2 text-zinc-600 font-medium">
-                                <li>• TVC Production</li>
-                                <li>• Radio CM</li>
-                                <li>• Media Buying</li>
+                                <li>• TVC 제작</li>
+                                <li>• 라디오 CM</li>
+                                <li>• 미디어 바잉</li>
                             </ul>
                         </div>
                     </motion.div>
@@ -47,8 +47,8 @@ const ServicesSection = () => {
                             <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mb-4">
                                 <MonitorPlay className="text-white" size={20} />
                             </div>
-                            <h3 className="text-2xl font-bold text-white">Digital Marketing</h3>
-                            <p className="text-zinc-400 text-sm">Youtube, SNS, Display Ads</p>
+                            <h3 className="text-2xl font-bold text-white">디지털 마케팅</h3>
+                            <p className="text-zinc-400 text-sm">유튜브, SNS, 디스플레이 광고</p>
                         </div>
                         <div className="absolute right-0 top-1/2 -translate-y-1/2 -mr-10">
                             {/* Abstract Graph UI */}
@@ -61,9 +61,9 @@ const ServicesSection = () => {
                         whileHover={{ scale: 0.98 }}
                         className="col-span-1 md:col-span-1 md:row-span-1 bg-white rounded-3xl p-8 border border-zinc-100 shadow-sm hover:shadow-lg transition-all"
                     >
-                        <h3 className="text-xl font-bold text-zinc-900 mb-4">Sponsorship & PPL</h3>
+                        <h3 className="text-xl font-bold text-zinc-900 mb-4">스폰서십 & PPL</h3>
                         <div className="w-full h-32 bg-gray-50 rounded-lg flex items-center justify-center border border-zinc-100">
-                            <span className="text-zinc-400 font-medium">Content Integration</span>
+                            <span className="text-zinc-400 font-medium">콘텐츠 통합</span>
                         </div>
                     </motion.div>
 
@@ -73,8 +73,8 @@ const ServicesSection = () => {
                         className="col-span-1 md:col-span-1 md:row-span-1 bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-8 shadow-lg"
                     >
                         <MousePointer2 className="text-white mb-4" size={32} />
-                        <h3 className="text-xl font-bold text-white">Interactive</h3>
-                        <p className="text-blue-100/80 text-sm mt-2">Web & 3D Experiences</p>
+                        <h3 className="text-xl font-bold text-white">인터랙티브</h3>
+                        <p className="text-blue-100/80 text-sm mt-2">웹 & 3D 경험</p>
                     </motion.div>
 
                 </div>

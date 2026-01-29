@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer: React.FC = () => {
@@ -9,21 +10,21 @@ const Footer: React.FC = () => {
                 {/* Left: Branding & CTA */}
                 <div>
                     <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-900">
-                        Ready to <br />
+                        프로젝트를 <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                            Project?
+                            시작할 준비가 되셨나요?
                         </span>
                     </h2>
-                    <button className="group relative px-8 py-3 bg-black text-white font-semibold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-black/20">
-                        <span className="relative z-10">Project Request →</span>
-                    </button>
+                    <Link to="/contact" className="inline-block group relative px-8 py-3 bg-black text-white font-semibold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-black/20">
+                        <span className="relative z-10">프로젝트 문의하기 →</span>
+                    </Link>
                 </div>
 
                 {/* Right: Info */}
                 <div className="space-y-6 text-zinc-600 font-medium">
                     <div className="flex items-start space-x-4">
                         <MapPin className="mt-1 flex-shrink-0 text-zinc-900" size={20} />
-                        <p>Seoul, Yeongdeungpo-gu, National Assembly-daero 66-gil 23, Sanjeong Building 4F</p>
+                        <p>서울시 영등포구 국회대로 66길 23, 산정빌딩 4층</p>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Mail size={20} className="text-zinc-900" />
