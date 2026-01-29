@@ -1,7 +1,30 @@
+import { useAdmin } from '../context/AdminContext';
 import { motion } from 'framer-motion';
-import { Tv, MonitorPlay, MousePointer2 } from 'lucide-react';
+import { Tv, MonitorPlay, MousePointer2, Mic2, Clapperboard, MonitorSmartphone } from 'lucide-react';
 
 const ServicesSection = () => {
+    const { services } = useAdmin();
+
+    const getIcon = (id: number) => {
+        switch (id) {
+            case 1: return <Tv size={200} className="text-zinc-900" />;
+            case 2: return <Mic2 size={200} className="text-zinc-900" />;
+            case 3: return <Clapperboard size={200} className="text-zinc-900" />;
+            case 4: return <MonitorSmartphone size={200} className="text-zinc-900" />;
+            default: return <Tv size={200} className="text-zinc-900" />;
+        }
+    };
+
+    const getSmallIcon = (id: number) => {
+        switch (id) {
+            case 1: return <Tv className="text-white" size={24} />;
+            case 2: return <Mic2 className="text-white" size={24} />;
+            case 3: return <Clapperboard className="text-white" size={24} />;
+            case 4: return <MonitorSmartphone className="text-white" size={24} />;
+            default: return <Tv className="text-white" size={24} />;
+        }
+    };
+
     return (
         <section className="bg-white py-32 px-6">
             <div className="container mx-auto">
@@ -13,70 +36,66 @@ const ServicesSection = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-4 md:grid-rows-2 gap-6 h-auto md:h-[800px]">
+                    {services.map((service, index) => {
+                        // Dynamic layout based on index/id for variety, similar to original design
+                        const isLarge = index === 0; // First item large
+                        const isWide = index === 1; // Second item wide
 
-                    {/* Item 1: Broadcast */}
-                    <motion.div
-                        whileHover={{ scale: 0.98 }}
-                        className="col-span-1 md:col-span-2 md:row-span-2 bg-gray-50 rounded-3xl p-8 flex flex-col justify-between border border-zinc-100 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all"
-                    >
-                        <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <Tv size={200} className="text-zinc-900" />
-                        </div>
-                        <div>
-                            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-200">
-                                <Tv className="text-white" size={24} />
-                            </div>
-                            <h3 className="text-3xl font-bold text-zinc-900 mb-2">방송 미디어</h3>
-                            <p className="text-zinc-500">TV 광고, 라디오 캠페인, 그리고 미디어 기획.</p>
-                        </div>
-                        <div className="mt-10">
-                            <ul className="space-y-2 text-zinc-600 font-medium">
-                                <li>• TVC 제작</li>
-                                <li>• 라디오 CM</li>
-                                <li>• 미디어 바잉</li>
-                            </ul>
-                        </div>
-                    </motion.div>
+                        // We will map based on the original specialized layout logic roughly
+                        // But since we have dynamic data, we'll try to fit them into the grid.
+                        // The original had 4 items. We assume 4 items in standard data.
 
-                    {/* Item 2: Digital */}
-                    <motion.div
-                        whileHover={{ scale: 0.98 }}
-                        className="col-span-1 md:col-span-2 md:row-span-1 bg-zinc-900 rounded-3xl p-8 flex items-center justify-between shadow-lg relative overflow-hidden group"
-                    >
-                        <div className="z-10">
-                            <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mb-4">
-                                <MonitorPlay className="text-white" size={20} />
-                            </div>
-                            <h3 className="text-2xl font-bold text-white">디지털 마케팅</h3>
-                            <p className="text-zinc-400 text-sm">유튜브, SNS, 디스플레이 광고</p>
-                        </div>
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 -mr-10">
-                            {/* Abstract Graph UI */}
-                            <div className="w-40 h-24 bg-gradient-to-t from-purple-500/20 to-transparent rounded-lg border border-purple-500/30" />
-                        </div>
-                    </motion.div>
+                        let gridClass = "col-span-1 md:col-span-1 md:row-span-1";
+                        if (index === 0) gridClass = "col-span-1 md:col-span-2 md:row-span-2 bg-gray-50";
+                        else if (index === 1) gridClass = "col-span-1 md:col-span-2 md:row-span-1 bg-zinc-900 text-white";
+                        else if (index === 2) gridClass = "col-span-1 md:col-span-1 md:row-span-1 bg-white";
+                        else gridClass = "col-span-1 md:col-span-1 md:row-span-1 bg-gradient-to-br from-blue-600 to-blue-800 text-white";
 
-                    {/* Item 3: PPL */}
-                    <motion.div
-                        whileHover={{ scale: 0.98 }}
-                        className="col-span-1 md:col-span-1 md:row-span-1 bg-white rounded-3xl p-8 border border-zinc-100 shadow-sm hover:shadow-lg transition-all"
-                    >
-                        <h3 className="text-xl font-bold text-zinc-900 mb-4">스폰서십 & PPL</h3>
-                        <div className="w-full h-32 bg-gray-50 rounded-lg flex items-center justify-center border border-zinc-100">
-                            <span className="text-zinc-400 font-medium">콘텐츠 통합</span>
-                        </div>
-                    </motion.div>
+                        const textColor = (index === 1 || index === 3) ? "text-white" : "text-zinc-900";
+                        const descColor = (index === 1 || index === 3) ? "text-blue-100/80" : "text-zinc-500";
 
-                    {/* Item 4: OOH / ETC */}
-                    <motion.div
-                        whileHover={{ scale: 0.98 }}
-                        className="col-span-1 md:col-span-1 md:row-span-1 bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-8 shadow-lg"
-                    >
-                        <MousePointer2 className="text-white mb-4" size={32} />
-                        <h3 className="text-xl font-bold text-white">인터랙티브</h3>
-                        <p className="text-blue-100/80 text-sm mt-2">웹 & 3D 경험</p>
-                    </motion.div>
+                        return (
+                            <motion.div
+                                key={service.id}
+                                whileHover={{ scale: 0.98 }}
+                                className={`${gridClass} rounded-3xl p-8 flex flex-col justify-between border border-zinc-100 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all`}
+                            >
+                                {index === 0 && (
+                                    <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
+                                        {getIcon(service.id)}
+                                    </div>
+                                )}
 
+                                <div>
+                                    {index === 0 && (
+                                        <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-200">
+                                            {getSmallIcon(service.id)}
+                                        </div>
+                                    )}
+                                    {index === 3 && <MousePointer2 className="text-white mb-4" size={32} />}
+
+                                    <h3 className={`text-2xl md:text-3xl font-bold ${textColor} mb-2`}>{service.title}</h3>
+                                    <p className={`${descColor} text-sm md:text-base`}>{service.description}</p>
+                                </div>
+
+                                {(index === 0) && (
+                                    <div className="mt-10">
+                                        <ul className="space-y-2 text-zinc-600 font-medium">
+                                            {service.subItems.slice(0, 3).map((sub, i) => (
+                                                <li key={i}>• {sub}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {index === 1 && (
+                                    <div className="absolute right-0 top-1/2 -translate-y-1/2 -mr-10">
+                                        <div className="w-40 h-24 bg-gradient-to-t from-purple-500/20 to-transparent rounded-lg border border-purple-500/30" />
+                                    </div>
+                                )}
+                            </motion.div>
+                        );
+                    })}
                 </div>
             </div>
         </section>

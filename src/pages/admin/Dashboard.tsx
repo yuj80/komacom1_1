@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAdmin, type PortfolioItem, type HistoryItem } from '../../context/AdminContext';
-import { useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Trash2, PlayCircle, Image as ImageIcon, Save, Building2, Phone as PhoneIcon, LayoutGrid, Layers, Settings, Edit2, X } from 'lucide-react';
+import { useAdmin, type PortfolioItem, type HistoryItem, type ContactData } from '../../context/AdminContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { LogOut, Plus, Trash2, PlayCircle, Image as ImageIcon, Save, Building2, Phone as PhoneIcon, LayoutGrid, Layers, Settings, Edit2, X, ExternalLink } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
     const {
@@ -32,6 +32,13 @@ const Dashboard: React.FC = () => {
     // Settings State
     const [newAdminId, setNewAdminId] = useState('');
     const [newAdminPass, setNewAdminPass] = useState('');
+
+    // Contact Edit State
+    const [editingContact, setEditingContact] = useState<ContactData>(contact);
+
+    useEffect(() => {
+        setEditingContact(contact);
+    }, [contact]);
 
     // Check auth
     useEffect(() => {
@@ -98,6 +105,14 @@ const Dashboard: React.FC = () => {
                     <LogOut size={16} className="mr-2" /> 로그아웃
                 </button>
             </header>
+
+            <div className="bg-blue-50/50 border-b border-blue-100 py-3 px-8 text-center text-sm text-blue-800 flex justify-center items-center gap-3">
+                <span>⚠️ 수정 사항은 '저장' 또는 '적용/수정하기' 버튼을 눌러야 반영됩니다.</span>
+                <Link to="/" target="_blank" className="font-bold underline flex items-center hover:text-blue-600">
+                    <ExternalLink size={14} className="mr-1" />
+                    홈페이지에서 확인하기
+                </Link>
+            </div>
 
             <div className="container mx-auto px-6 py-10 flex flex-col md:flex-row gap-8">
 
@@ -331,8 +346,8 @@ const Dashboard: React.FC = () => {
                                     <label className="block text-sm font-bold text-zinc-500 mb-2">상단 안내 문구</label>
                                     <input
                                         className="w-full border p-3 rounded-lg bg-zinc-50 focus:bg-white transition-colors"
-                                        value={contact.introText}
-                                        onChange={(e) => updateContact({ ...contact, introText: e.target.value })}
+                                        value={editingContact.introText}
+                                        onChange={(e) => setEditingContact({ ...editingContact, introText: e.target.value })}
                                     />
                                 </div>
 
@@ -341,16 +356,16 @@ const Dashboard: React.FC = () => {
                                         <label className="block text-sm font-bold text-zinc-500 mb-2">이메일</label>
                                         <input
                                             className="w-full border p-3 rounded-lg bg-zinc-50"
-                                            value={contact.email}
-                                            onChange={(e) => updateContact({ ...contact, email: e.target.value })}
+                                            value={editingContact.email}
+                                            onChange={(e) => setEditingContact({ ...editingContact, email: e.target.value })}
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-zinc-500 mb-2">전화번호</label>
                                         <input
                                             className="w-full border p-3 rounded-lg bg-zinc-50"
-                                            value={contact.phone}
-                                            onChange={(e) => updateContact({ ...contact, phone: e.target.value })}
+                                            value={editingContact.phone}
+                                            onChange={(e) => setEditingContact({ ...editingContact, phone: e.target.value })}
                                         />
                                     </div>
                                 </div>
@@ -359,16 +374,22 @@ const Dashboard: React.FC = () => {
                                     <label className="block text-sm font-bold text-zinc-500 mb-2">주소</label>
                                     <input
                                         className="w-full border p-3 rounded-lg bg-zinc-50"
-                                        value={contact.address}
-                                        onChange={(e) => updateContact({ ...contact, address: e.target.value })}
+                                        value={editingContact.address}
+                                        onChange={(e) => setEditingContact({ ...editingContact, address: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="pt-4 border-t border-zinc-100 flex justify-end">
-                                    <span className="text-sm text-blue-600 font-medium flex items-center bg-blue-50 px-4 py-2 rounded-full">
-                                        <Save size={16} className="mr-2" />
-                                        입력 즉시 자동으로 저장됩니다.
-                                    </span>
+                                    <button
+                                        onClick={() => {
+                                            updateContact(editingContact);
+                                            alert('문의하기 정보가 수정/적용되었습니다.');
+                                        }}
+                                        className="bg-black text-white px-6 py-3 rounded-xl font-bold flex items-center hover:bg-zinc-800 transition-colors shadow-lg"
+                                    >
+                                        <Save size={18} className="mr-2" />
+                                        변경사항 적용하기
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -424,7 +445,7 @@ const Dashboard: React.FC = () => {
 
                 </main>
             </div>
-        </div>
+        </div >
     );
 };
 

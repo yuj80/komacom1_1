@@ -2,7 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
+import { useAdmin } from '../context/AdminContext';
+
 const Footer: React.FC = () => {
+    const { contact } = useAdmin();
     return (
         <footer className="relative bg-zinc-100 text-zinc-900 py-16 overflow-hidden border-t border-zinc-200">
             <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -24,15 +27,15 @@ const Footer: React.FC = () => {
                 <div className="space-y-6 text-zinc-600 font-medium">
                     <div className="flex items-start space-x-4">
                         <MapPin className="mt-1 flex-shrink-0 text-zinc-900" size={20} />
-                        <p>서울시 영등포구 국회대로 66길 23, 산정빌딩 4층</p>
+                        <p>{contact.address}</p>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Mail size={20} className="text-zinc-900" />
-                        <p>help@komacom.co.kr | ad@komacom.co.kr</p>
+                        <p>{contact.email}</p>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Phone size={20} className="text-zinc-900" />
-                        <p>02-1234-5678</p>
+                        <p>{contact.phone}</p>
                     </div>
                     <div className="pt-8 flex items-center gap-2 text-xs text-zinc-400">
                         <p>Copyright © 2026 KOMA Communication. All Rights Reserved.</p>
