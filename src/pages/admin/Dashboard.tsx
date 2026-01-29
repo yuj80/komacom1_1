@@ -241,9 +241,16 @@ const Dashboard: React.FC = () => {
                             <div className="grid grid-cols-1 gap-6">
                                 {services.map((service) => (
                                     <div key={service.id} className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm relative overflow-hidden">
-                                        <div className="flex justify-between items-center mb-6">
-                                            <h3 className="text-xl font-bold text-blue-600">{service.title}</h3>
-                                            <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">ID: {service.id}</div>
+                                        <div className="flex justify-between items-start mb-6 gap-4">
+                                            <div className="flex-grow">
+                                                <label className="block text-xs font-bold text-zinc-400 mb-1">카테고리명 (제목)</label>
+                                                <input
+                                                    className="w-full text-xl md:text-2xl font-bold text-blue-600 border-b border-zinc-200 focus:border-blue-500 bg-transparent px-2 py-1 transition-colors"
+                                                    value={service.title}
+                                                    onChange={(e) => updateService({ ...service, title: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold flex-shrink-0 mt-2">ID: {service.id}</div>
                                         </div>
                                         <div className="grid grid-cols-1 gap-6">
                                             <div>
@@ -316,9 +323,14 @@ const Dashboard: React.FC = () => {
                                 <div className="bg-zinc-100 p-6 rounded-xl mb-6 animate-in slide-in-from-top-2">
                                     <h4 className="font-bold mb-4">{editingHistoryId ? '연혁 수정' : '새 연혁 등록'}</h4>
                                     <div className="grid grid-cols-6 gap-4 mb-4">
-                                        <input className="col-span-1 p-2 rounded border" placeholder="연도 (2026)" value={newHistory.year} onChange={e => setNewHistory({ ...newHistory, year: e.target.value })} />
-                                        <input className="col-span-2 p-2 rounded border" placeholder="제목" value={newHistory.title} onChange={e => setNewHistory({ ...newHistory, title: e.target.value })} />
-                                        <input className="col-span-3 p-2 rounded border" placeholder="내용" value={newHistory.desc} onChange={e => setNewHistory({ ...newHistory, desc: e.target.value })} />
+                                        <input className="col-span-2 p-3 rounded-lg border bg-zinc-50" placeholder="연도 (YYYY)" value={newHistory.year} onChange={e => setNewHistory({ ...newHistory, year: e.target.value })} />
+                                        <input className="col-span-4 p-3 rounded-lg border bg-zinc-50" placeholder="제목 (ex: 주요 프로젝트)" value={newHistory.title} onChange={e => setNewHistory({ ...newHistory, title: e.target.value })} />
+                                        <textarea
+                                            className="col-span-6 p-3 rounded-lg border bg-zinc-50 h-32 resize-y whitespace-pre-wrap"
+                                            placeholder="내용 (클라이언트 목록 등, 줄바꿈 가능)"
+                                            value={newHistory.desc}
+                                            onChange={e => setNewHistory({ ...newHistory, desc: e.target.value })}
+                                        />
                                     </div>
                                     <button onClick={handleAddHistory} className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">{editingHistoryId ? '수정하기' : '추가하기'}</button>
                                 </div>

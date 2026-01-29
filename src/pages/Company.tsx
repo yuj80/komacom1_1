@@ -33,7 +33,7 @@ const Company: React.FC = () => {
                             </div>
                             <div className="text-2xl font-bold text-blue-600 mb-1">{item.year}</div>
                             <h3 className="text-2xl font-bold mb-2 text-zinc-900">{item.title}</h3>
-                            <p className="text-zinc-500">{item.desc}</p>
+                            <p className="text-zinc-500 whitespace-pre-line leading-relaxed">{item.desc}</p>
                         </motion.div>
                     ))}
                 </div>
