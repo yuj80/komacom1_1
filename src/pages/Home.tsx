@@ -101,7 +101,7 @@ const Home: React.FC = () => {
                     <div className="mb-2 md:mb-4">
                         <ParticleText
                             text="우리는 광고의"
-                            className="text-5xl md:text-8xl font-black tracking-tighter"
+                            className="text-4xl md:text-8xl font-black tracking-tighter"
                             delay={0.5}
                             control={animState}
                         />
@@ -110,7 +110,7 @@ const Home: React.FC = () => {
                     <div className="relative">
                         <ParticleText
                             text="흐름을 디자인합니다"
-                            className="text-5xl md:text-8xl font-black tracking-tighter"
+                            className="text-4xl md:text-8xl font-black tracking-tighter"
                             delay={1.5}
                             isGradient={true}
                             control={animState}
@@ -123,7 +123,7 @@ const Home: React.FC = () => {
                             className="absolute inset-0 pointer-events-none"
                             aria-hidden="true"
                         >
-                            <span className="text-5xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-transparent via-white/50 to-transparent animate-gradient-x bg-[length:200%_auto] absolute inset-0 mx-auto w-fit">
+                            <span className="text-4xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-transparent via-white/50 to-transparent animate-gradient-x bg-[length:200%_auto] absolute inset-0 mx-auto w-fit">
                                 흐름을 디자인합니다
                             </span>
                         </motion.div>

@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
                         <Link
                             key={link.name}
                             to={link.path}
-                            className="text-2xl text-zinc-900 font-light tracking-wide hover:text-blue-600 transition-colors"
+                            className="text-3xl text-zinc-900 font-bold tracking-tight hover:text-blue-600 transition-colors"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             {link.name}
