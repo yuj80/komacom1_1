@@ -275,13 +275,25 @@ const Dashboard: React.FC = () => {
                             <h2 className="text-2xl font-bold mb-6 text-zinc-900">회사소개 관리</h2>
 
                             {/* Main Desc */}
-                            <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm mb-8">
-                                <label className="block text-lg font-bold text-zinc-900 mb-3">메인 소개글</label>
-                                <textarea
-                                    className="w-full border border-zinc-200 p-4 rounded-xl bg-gray-50 focus:bg-white h-32 text-zinc-700"
-                                    value={about.description}
-                                    onChange={(e) => updateAbout({ ...about, description: e.target.value })}
-                                />
+                            <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm mb-8 space-y-6">
+                                <div>
+                                    <label className="block text-lg font-bold text-zinc-900 mb-2">메인 슬로건 (홈 화면)</label>
+                                    <p className="text-sm text-zinc-500 mb-2">줄바꿈은 \n 으로 입력해주세요.</p>
+                                    <input
+                                        className="w-full border border-zinc-200 p-4 rounded-xl bg-gray-50 focus:bg-white text-zinc-900 font-bold"
+                                        value={about.slogan || ''}
+                                        onChange={(e) => updateAbout({ ...about, slogan: e.target.value })}
+                                        placeholder="우리는 예술과\n기술의 간극을 잇습니다."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-lg font-bold text-zinc-900 mb-3">회사 소개글 (Company 페이지)</label>
+                                    <textarea
+                                        className="w-full border border-zinc-200 p-4 rounded-xl bg-gray-50 focus:bg-white h-32 text-zinc-700"
+                                        value={about.description}
+                                        onChange={(e) => updateAbout({ ...about, description: e.target.value })}
+                                    />
+                                </div>
                             </div>
 
                             {/* History */}

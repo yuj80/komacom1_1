@@ -26,6 +26,7 @@ export interface HistoryItem {
 }
 
 export interface AboutData {
+    slogan: string;
     description: string;
     history: HistoryItem[];
 }
@@ -83,6 +84,7 @@ const INITIAL_SERVICES: ServiceItem[] = [
 ];
 
 const INITIAL_ABOUT: AboutData = {
+    slogan: '우리는 예술과\\n기술의 간극을 잇습니다.',
     description: '우리는 아이디어의 힘으로 비즈니스를 변화시킬 수 있다고 믿는 크리에이티브 에이전시입니다.',
     history: [
         { id: 1, year: '2026', title: '글로벌 확장', desc: '아시아 주요 거점 지사 설립' },
@@ -142,6 +144,19 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     useEffect(() => localStorage.setItem('servicesData', JSON.stringify(services)), [services]);
     useEffect(() => localStorage.setItem('aboutData', JSON.stringify(about)), [about]);
     useEffect(() => localStorage.setItem('contactData', JSON.stringify(contact)), [contact]);
+
+    // Listen for changes from other tabs
+    useEffect(() => {
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === 'portfolioData' && e.newValue) setPortfolio(JSON.parse(e.newValue));
+            if (e.key === 'servicesData' && e.newValue) setServices(JSON.parse(e.newValue));
+            if (e.key === 'aboutData' && e.newValue) setAbout(JSON.parse(e.newValue));
+            if (e.key === 'contactData' && e.newValue) setContact(JSON.parse(e.newValue));
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
 
     // Auth Functions
     const login = (id: string, pass: string) => {

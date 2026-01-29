@@ -13,10 +13,12 @@ const Footer: React.FC = () => {
                 {/* Left: Branding & CTA */}
                 <div>
                     <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-900">
-                        프로젝트를 <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                            시작할 준비가 되셨나요?
-                        </span>
+                        {contact.introText.split('\\n').map((line, i) => (
+                            <React.Fragment key={i}>
+                                {line}
+                                {i < contact.introText.split('\\n').length - 1 && <br />}
+                            </React.Fragment>
+                        ))}
                     </h2>
                     <Link to="/contact" className="inline-block group relative px-8 py-3 bg-black text-white font-semibold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-black/20">
                         <span className="relative z-10">프로젝트 문의하기 →</span>
