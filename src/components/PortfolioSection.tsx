@@ -15,7 +15,7 @@ const PortfolioSection = () => {
 
     return (
         <section ref={targetRef} className="relative h-[300vh] bg-transparent text-zinc-900">
-            <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+            <div className="sticky top-0 flex h-[100dvh] items-center overflow-hidden">
                 <motion.div style={{ x }} className="flex gap-10 pl-20 pr-20">
                     {portfolio.map((project) => (
                         <div

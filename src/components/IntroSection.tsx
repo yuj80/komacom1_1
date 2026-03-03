@@ -14,8 +14,8 @@ const IntroSection = () => {
     const xRight = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
     return (
-        <div ref={containerRef} className="py-32 overflow-hidden bg-transparent text-zinc-900">
-            <div className="container mx-auto px-6 mb-20 text-center">
+        <div ref={containerRef} className="py-16 md:py-32 overflow-hidden bg-transparent text-zinc-900">
+            <div className="container mx-auto px-6 mb-10 md:mb-20 text-center">
                 <p className="text-rose-600 font-bold mb-4">우리의 철학</p>
                 <h2 className="text-3xl md:text-5xl font-bold leading-tight text-zinc-900">
                     {(about.slogan || "우리는 예술과\\n기술의 간극을 잇습니다.").split('\\n').map((line, i) => (

@@ -88,9 +88,9 @@ const ServicesSection = () => {
     };
 
     return (
-        <section className="bg-transparent py-32 px-6 relative z-10 text-zinc-900">
+        <section className="bg-transparent py-16 md:py-32 px-6 relative z-10 text-zinc-900">
             <div className="container mx-auto">
-                <div className="mb-20 text-center">
+                <div className="mb-12 md:mb-20 text-center">
                     <h2 className="text-4xl md:text-6xl font-bold mb-6 text-zinc-900">서비스 소개</h2>
                     <p className="text-zinc-500 max-w-2xl mx-auto">
                         모든 미디어 채널에 걸친 종합 광고 솔루션을 제공합니다.
@@ -114,7 +114,7 @@ const ServicesSection = () => {
                                 layoutId={`card-${service.id}`}
                                 onClick={() => setSelectedId(service.id)}
                                 whileHover={{ scale: 0.98 }}
-                                className={`${gridClass} rounded-3xl p-8 flex flex-col justify-between border shadow-sm relative overflow-hidden group hover:shadow-xl hover:shadow-rose-900/20 transition-all cursor-pointer`}
+                                className={`${gridClass} rounded-3xl p-6 md:p-8 flex flex-col justify-between border shadow-sm relative overflow-hidden group hover:shadow-xl hover:shadow-rose-900/20 transition-all cursor-pointer`}
                             >
                                 {index === 0 && (
                                     <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">

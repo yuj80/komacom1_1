@@ -9,7 +9,7 @@ const Home: React.FC = () => {
     return (
         <div className="relative">
             {/* SECTION 1: HERO */}
-            <section className="h-screen w-full relative flex items-center justify-center overflow-hidden">
+            <section className="h-[100dvh] w-full relative flex items-center justify-center overflow-hidden">
                 <HeroCanvas />
 
                 <div className="z-10 text-center px-4 relative pointer-events-none">

@@ -7,7 +7,7 @@ import { useAdmin } from '../context/AdminContext';
 const Footer: React.FC = () => {
     const { contact } = useAdmin();
     return (
-        <footer className="relative bg-rose-50 text-zinc-900 py-16 overflow-hidden border-t border-rose-100">
+        <footer className="relative bg-rose-50 text-zinc-900 py-12 md:py-16 overflow-hidden border-t border-rose-100">
             <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
                 {/* Left: Branding & CTA */}
