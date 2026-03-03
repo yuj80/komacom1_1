@@ -2,6 +2,17 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdmin } from '../context/AdminContext';
+import type { PortfolioItem } from '../context/AdminContext';
+
+const getCoverImage = (project: PortfolioItem) => {
+    if (project.thumbnail) return project.thumbnail;
+    if (!project.url) return '';
+    const ytMatch = project.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    if (ytMatch && ytMatch[1]) {
+        return `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
+    }
+    return project.url;
+};
 
 const PortfolioSection = () => {
     const { portfolio } = useAdmin();
@@ -23,16 +34,21 @@ const PortfolioSection = () => {
                             className={`group relative h-[400px] w-[85vw] md:h-[600px] md:w-[800px] flex-shrink-0 overflow-hidden rounded-3xl bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[0.98]`}
                         >
                             {/* Background Image */}
-                            {project.url ? (
+                            {getCoverImage(project) ? (
                                 <img
-                                    src={project.url}
+                                    src={getCoverImage(project)}
                                     alt={project.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    onError={(e) => {
+                                        if (e.currentTarget.src.includes('maxresdefault.jpg')) {
+                                            e.currentTarget.src = e.currentTarget.src.replace('maxresdefault.jpg', 'hqdefault.jpg');
+                                        }
+                                    }}
                                 />
                             ) : null}
 
                             {/* Gradient Overlay */}
-                            <div className={`absolute inset-0 bg-gradient-to-br ${project.color} ${project.url ? 'opacity-60 group-hover:opacity-75' : 'opacity-100'} transition-opacity duration-500`} />
+                            <div className={`absolute inset-0 bg-gradient-to-br ${project.color} ${getCoverImage(project) ? 'opacity-60 group-hover:opacity-75' : 'opacity-100'} transition-opacity duration-500`} />
 
                             <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center text-white z-10">
                                 <h3 className="text-4xl md:text-6xl font-black drop-shadow-md">{project.title}</h3>
