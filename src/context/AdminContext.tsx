@@ -127,7 +127,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         return localStorage.getItem('isAdmin') === 'true';
     });
     const [adminId, setAdminId] = useState<string>(() => localStorage.getItem('adminId') || 'admin');
-    const [adminPass, setAdminPass] = useState<string>(() => localStorage.getItem('adminPass') || '1111');
+    const [adminPass, setAdminPass] = useState<string>(() => localStorage.getItem('adminPass') || '0000');
 
     // Sync to LocalStorage (Run whenever state changes)
     useEffect(() => localStorage.setItem('portfolioData', JSON.stringify(portfolio)), [portfolio]);

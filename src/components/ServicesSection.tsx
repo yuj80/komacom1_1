@@ -4,7 +4,6 @@ import { useAdmin } from '../context/AdminContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tv, MousePointer2, Mic2, Clapperboard, MonitorSmartphone, X, ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react';
 
-// Sub-item Component for Hover Effect
 const SubServiceItem = ({ item }: { item: string, index?: number }) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -15,25 +14,25 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
             onHoverEnd={() => setIsHovered(false)}
             className={`relative overflow-hidden rounded-2xl border transition-all duration-300 cursor-default
                 ${isHovered
-                    ? 'bg-blue-50/50 border-blue-200 shadow-md scale-[1.02]'
-                    : 'bg-gray-50 border-gray-100'
+                    ? 'bg-rose-50/50 border-rose-200 shadow-md scale-[1.02]'
+                    : 'bg-white border-zinc-100'
                 }`}
         >
             <motion.div layout className="p-4 flex items-center gap-4 relative z-10">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300
                     ${isHovered
-                        ? 'bg-blue-600 text-white rotate-12'
+                        ? 'bg-rose-600 text-white rotate-12'
                         : 'bg-white text-zinc-300 border border-zinc-200'
                     }`}>
                     <CheckCircle2 size={isHovered ? 20 : 18} />
                 </div>
 
-                <h5 className={`text-lg font-bold transition-colors duration-300 ${isHovered ? 'text-blue-900' : 'text-zinc-700'}`}>
+                <h5 className={`text-lg font-bold transition-colors duration-300 ${isHovered ? 'text-rose-900' : 'text-zinc-700'}`}>
                     {item}
                 </h5>
 
                 <div className="ml-auto">
-                    <ChevronRight size={16} className={`text-zinc-400 transition-transform duration-300 ${isHovered ? 'rotate-90 text-blue-500' : ''}`} />
+                    <ChevronRight size={16} className={`text-zinc-400 transition-transform duration-300 ${isHovered ? 'rotate-90 text-rose-500' : ''}`} />
                 </div>
             </motion.div>
 
@@ -47,7 +46,7 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
                     >
                         <div className="px-4 pb-5 pl-[4.5rem]">
                             <p className="text-zinc-600 text-sm leading-relaxed">
-                                고객의 목표 달성을 위해 <strong>{item}</strong> 영역에서<br />
+                                고객의 목표 달성을 위해 <strong className="text-rose-700">{item}</strong> 영역에서<br />
                                 차별화된 전략과 크리에이티브를 제공합니다.
                             </p>
                         </div>
@@ -56,7 +55,7 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
             </AnimatePresence>
 
             {/* Decorative background accent on hover */}
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100/20 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 transition-opacity duration-300 pointer-events-none
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-rose-100/30 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 transition-opacity duration-300 pointer-events-none
                 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
             />
         </motion.div>
@@ -89,7 +88,7 @@ const ServicesSection = () => {
     };
 
     return (
-        <section className="bg-white py-32 px-6 relative z-10">
+        <section className="bg-transparent py-32 px-6 relative z-10 text-zinc-900">
             <div className="container mx-auto">
                 <div className="mb-20 text-center">
                     <h2 className="text-4xl md:text-6xl font-bold mb-6 text-zinc-900">서비스 소개</h2>
@@ -101,13 +100,13 @@ const ServicesSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-4 md:grid-rows-2 gap-6 h-auto md:h-[800px]">
                     {services.map((service, index) => {
                         let gridClass = "col-span-1 md:col-span-1 md:row-span-1";
-                        if (index === 0) gridClass = "col-span-1 md:col-span-2 md:row-span-2 bg-gray-50";
+                        if (index === 0) gridClass = "col-span-1 md:col-span-2 md:row-span-2 bg-rose-50/50";
                         else if (index === 1) gridClass = "col-span-1 md:col-span-2 md:row-span-1 bg-zinc-900 text-white";
                         else if (index === 2) gridClass = "col-span-1 md:col-span-1 md:row-span-1 bg-white";
-                        else gridClass = "col-span-1 md:col-span-1 md:row-span-1 bg-gradient-to-br from-blue-600 to-blue-800 text-white";
+                        else gridClass = "col-span-1 md:col-span-1 md:row-span-1 bg-gradient-to-br from-rose-500 to-rose-700 text-white";
 
                         const textColor = (index === 1 || index === 3) ? "text-white" : "text-zinc-900";
-                        const descColor = (index === 1 || index === 3) ? "text-blue-100/80" : "text-zinc-500";
+                        const descColor = (index === 1 || index === 3) ? "text-rose-100/80" : "text-zinc-500";
 
                         return (
                             <motion.div
@@ -115,7 +114,7 @@ const ServicesSection = () => {
                                 layoutId={`card-${service.id}`}
                                 onClick={() => setSelectedId(service.id)}
                                 whileHover={{ scale: 0.98 }}
-                                className={`${gridClass} rounded-3xl p-8 flex flex-col justify-between border border-zinc-100 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all cursor-pointer`}
+                                className={`${gridClass} rounded-3xl p-8 flex flex-col justify-between border shadow-sm relative overflow-hidden group hover:shadow-xl hover:shadow-rose-900/20 transition-all cursor-pointer`}
                             >
                                 {index === 0 && (
                                     <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -125,7 +124,7 @@ const ServicesSection = () => {
 
                                 <div>
                                     {index === 0 && (
-                                        <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-200">
+                                        <div className="w-12 h-12 bg-rose-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-rose-200">
                                             {getSmallIcon(service.id)}
                                         </div>
                                     )}
@@ -189,20 +188,20 @@ const ServicesSection = () => {
                                 <motion.div
                                     key={service.id}
                                     layoutId={`card-${service.id}`}
-                                    className="w-full max-w-4xl max-h-[90vh] bg-white rounded-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row"
+                                    className="w-full max-w-4xl max-h-[90vh] bg-white rounded-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row text-zinc-900"
                                 >
                                     {/* Close Button */}
                                     <button
                                         onClick={(e) => { e.stopPropagation(); setSelectedId(null); }}
-                                        className="absolute top-4 right-4 md:top-6 md:right-6 z-20 p-2 bg-black/10 hover:bg-black/20 rounded-full transition-colors"
+                                        className="absolute top-4 right-4 md:top-6 md:right-6 z-20 p-2 bg-black/10 hover:bg-black/20 text-zinc-900 rounded-full transition-colors backdrop-blur-sm"
                                     >
-                                        <X size={24} className="text-zinc-900" />
+                                        <X size={24} />
                                     </button>
 
                                     {/* Left Panel: Visual / Title */}
-                                    <div className={`w-full md:w-2/5 p-6 md:p-12 flex flex-col justify-between relative overflow-hidden ${service.id === 4 ? 'bg-gradient-to-br from-blue-600 to-blue-800 text-white' :
+                                    <div className={`w-full md:w-2/5 p-6 md:p-12 flex flex-col justify-between relative overflow-hidden ${service.id === 4 ? 'bg-gradient-to-br from-rose-500 to-rose-700 text-white' :
                                         service.id === 2 ? 'bg-zinc-900 text-white' :
-                                            'bg-gray-50 text-zinc-900'
+                                            'bg-rose-50/50 text-zinc-900'
                                         }`}>
                                         <div className="relative z-10">
                                             <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-8 border border-white/20">
@@ -236,7 +235,7 @@ const ServicesSection = () => {
                                         className="w-full md:w-3/5 p-6 md:p-12 overflow-y-auto bg-white"
                                     >
                                         <h4 className="text-xl font-bold text-zinc-900 mb-6 flex items-center gap-2">
-                                            <div className="w-1 h-6 bg-blue-600 rounded-full" />
+                                            <div className="w-1 h-6 bg-rose-600 rounded-full" />
                                             상세 서비스 항목
                                         </h4>
 
@@ -249,7 +248,7 @@ const ServicesSection = () => {
                                         <div className="mt-auto pt-6 border-t border-gray-100 flex justify-end">
                                             <button
                                                 onClick={() => navigate('/contact')}
-                                                className="flex items-center gap-2 text-zinc-900 font-bold hover:text-blue-600 transition-colors group"
+                                                className="flex items-center gap-2 text-zinc-900 font-bold hover:text-rose-600 transition-colors group"
                                             >
                                                 문의하기
                                                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />

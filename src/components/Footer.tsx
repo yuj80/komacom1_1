@@ -7,7 +7,7 @@ import { useAdmin } from '../context/AdminContext';
 const Footer: React.FC = () => {
     const { contact } = useAdmin();
     return (
-        <footer className="relative bg-zinc-100 text-zinc-900 py-16 overflow-hidden border-t border-zinc-200">
+        <footer className="relative bg-rose-50 text-zinc-900 py-16 overflow-hidden border-t border-rose-100">
             <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
                 {/* Left: Branding & CTA */}
@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
                             </React.Fragment>
                         ))}
                     </h2>
-                    <Link to="/contact" className="inline-block group relative px-8 py-3 bg-black text-white font-semibold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-black/20">
+                    <Link to="/contact" className="inline-block group relative px-8 py-3 bg-rose-600 text-white font-semibold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-rose-300">
                         <span className="relative z-10">프로젝트 문의하기 →</span>
                     </Link>
                 </div>
@@ -32,15 +32,15 @@ const Footer: React.FC = () => {
                 {/* Right: Info */}
                 <div className="space-y-6 text-zinc-600 font-medium">
                     <div className="flex items-start space-x-4">
-                        <MapPin className="mt-1 flex-shrink-0 text-zinc-900" size={20} />
+                        <MapPin className="mt-1 flex-shrink-0 text-rose-500" size={20} />
                         <p>{contact.address}</p>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <Mail size={20} className="text-zinc-900" />
+                        <Mail size={20} className="text-rose-500" />
                         <p>{contact.email}</p>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <Phone size={20} className="text-zinc-900" />
+                        <Phone size={20} className="text-rose-500" />
                         <p>{contact.phone}</p>
                     </div>
                     <div className="pt-8 flex items-center gap-2 text-xs text-zinc-400">
@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
             </div>
 
             {/* 3D Background Placeholder (Soft Light Blur) */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-200/20 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-rose-200/50 blur-[120px] rounded-full pointer-events-none" />
         </footer>
     );
 };

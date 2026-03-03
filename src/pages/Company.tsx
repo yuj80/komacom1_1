@@ -52,7 +52,7 @@ const Company: React.FC = () => {
                             scrolling="no"
                             marginHeight={0}
                             marginWidth={0}
-                            src="https://maps.google.com/maps?q=서울특별시+영등포구+국회대로+66길+23&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                            src={`https://maps.google.com/maps?q=${encodeURIComponent(contact.address)}&t=&z=17&ie=UTF8&iwloc=&output=embed`}
                             className="absolute inset-0 grayscale hover:grayscale-0 transition-all duration-700"
                         />
                     </div>

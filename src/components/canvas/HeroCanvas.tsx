@@ -1,6 +1,6 @@
-import { useRef } from 'react';
+import { useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, Float, MeshDistortMaterial } from '@react-three/drei';
+import { Environment, Float, MeshTransmissionMaterial, Text, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
 const FluidMesh = () => {
@@ -16,10 +16,10 @@ const FluidMesh = () => {
 
     return (
         <Float speed={4} rotationIntensity={0.5} floatIntensity={1}>
-            <mesh ref={meshRef} position={[0, 0, 0]} scale={2.2}>
+            <mesh ref={meshRef} position={[0, 0, -2]} scale={3.5}>
                 <sphereGeometry args={[1, 64, 64]} />
                 <MeshDistortMaterial
-                    color="#3b82f6"
+                    color="#be123c"
                     envMapIntensity={1}
                     clearcoat={1}
                     clearcoatRoughness={0}
@@ -33,18 +33,56 @@ const FluidMesh = () => {
     );
 };
 
+const HeroText = () => {
+    // Use local font for reliability and to avoid CORS issues
+    const fontUrl = '/fonts/Pretendard-Black.otf';
+
+    return (
+        <group position={[0, 0, 3]}>
+            <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+                <Text
+                    font={fontUrl}
+                    fontSize={0.6}
+                    letterSpacing={-0.05}
+                    lineHeight={1.2}
+                    position={[0, 0.4, 0]}
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    우리는 광고의
+                    <meshBasicMaterial color="#4c0519" toneMapped={false} transparent opacity={0.85} />
+                </Text>
+                <Text
+                    font={fontUrl}
+                    fontSize={0.6}
+                    letterSpacing={-0.05}
+                    lineHeight={1.2}
+                    position={[0, -0.4, 0]}
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    흐름을 디자인합니다
+                    <meshBasicMaterial color="#4c0519" toneMapped={false} transparent opacity={0.85} />
+                </Text>
+            </Float>
+        </group>
+    );
+};
+
 const HeroCanvas = () => {
     return (
-        <div className="w-full h-screen absolute top-0 left-0 -z-10 bg-white">
+        <div className="w-full h-screen absolute top-0 left-0 z-0 bg-gradient-to-br from-rose-50 via-white to-white">
             <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={[1, 2]}>
-                <ambientLight intensity={0.8} />
-                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
-                <pointLight position={[-10, -10, -10]} intensity={1} color="#3b82f6" />
+                <ambientLight intensity={1.2} />
+                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1.5} />
+                <pointLight position={[-10, -10, -10]} intensity={2} color="#f43f5e" />
 
-                <FluidMesh />
-
-                {/* Lighter environment for better reflections on light background */}
-                <Environment preset="warehouse" />
+                <Suspense fallback={null}>
+                    <HeroText />
+                    <FluidMesh />
+                    {/* Lighter environment for light background */}
+                    <Environment preset="warehouse" environmentIntensity={1} />
+                </Suspense>
             </Canvas>
 
             {/* Light gradient overlay */}
