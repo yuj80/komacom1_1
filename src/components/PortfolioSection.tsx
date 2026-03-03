@@ -20,9 +20,21 @@ const PortfolioSection = () => {
                     {portfolio.map((project) => (
                         <div
                             key={project.id}
-                            className={`group relative h-[400px] w-[85vw] md:h-[600px] md:w-[800px] flex-shrink-0 overflow-hidden rounded-3xl bg-gradient-to-br ${project.color} shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[0.98]`}
+                            className={`group relative h-[400px] w-[85vw] md:h-[600px] md:w-[800px] flex-shrink-0 overflow-hidden rounded-3xl bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[0.98]`}
                         >
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center text-white">
+                            {/* Background Image */}
+                            {project.url ? (
+                                <img
+                                    src={project.url}
+                                    alt={project.title}
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                            ) : null}
+
+                            {/* Gradient Overlay */}
+                            <div className={`absolute inset-0 bg-gradient-to-br ${project.color} ${project.url ? 'opacity-60 group-hover:opacity-75' : 'opacity-100'} transition-opacity duration-500`} />
+
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center text-white z-10">
                                 <h3 className="text-4xl md:text-6xl font-black drop-shadow-md">{project.title}</h3>
                                 <p className="mt-4 text-xl font-medium opacity-90">{project.category}</p>
                                 <button
