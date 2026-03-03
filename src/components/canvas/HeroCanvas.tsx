@@ -1,6 +1,6 @@
 import { useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, Float, MeshTransmissionMaterial, Text, MeshDistortMaterial } from '@react-three/drei';
+import { Environment, Float, Text, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
 const FluidMesh = () => {
