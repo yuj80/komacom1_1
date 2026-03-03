@@ -50,7 +50,7 @@ const HeroText = () => {
                     anchorY="middle"
                 >
                     우리는 광고의
-                    <meshBasicMaterial color="#4c0519" toneMapped={false} transparent opacity={0.85} />
+                    <meshBasicMaterial color="#4c0519" toneMapped={false} transparent opacity={0.65} />
                 </Text>
                 <Text
                     font={fontUrl}
@@ -62,7 +62,7 @@ const HeroText = () => {
                     anchorY="middle"
                 >
                     흐름을 디자인합니다
-                    <meshBasicMaterial color="#4c0519" toneMapped={false} transparent opacity={0.85} />
+                    <meshBasicMaterial color="#4c0519" toneMapped={false} transparent opacity={0.65} />
                 </Text>
             </Float>
         </group>
