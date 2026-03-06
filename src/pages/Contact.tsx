@@ -55,6 +55,10 @@ const Contact: React.FC = () => {
                                 <label className="text-sm font-semibold text-zinc-700">이메일</label>
                                 <input type="email" className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="your@email.com" />
                             </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-zinc-700">연락처</label>
+                                <input type="tel" className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="010-0000-0000" />
+                            </div>
                         </div>
 
                         <div className="space-y-2">
