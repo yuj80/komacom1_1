@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAdmin, type PortfolioItem, type HistoryItem, type ContactData } from '../../context/AdminContext';
+import { useAdmin, type PortfolioItem, type HistoryItem, type ContactData, type ClientItem } from '../../context/AdminContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, Plus, Trash2, PlayCircle, Image as ImageIcon, Save, Building2, Phone as PhoneIcon, LayoutGrid, Layers, Settings, Edit2, X, ExternalLink } from 'lucide-react';
 
@@ -10,11 +10,12 @@ const Dashboard: React.FC = () => {
         services, updateService,
         about, updateAbout, addHistory, deleteHistory, updateHistory,
         contact, updateContact,
+        clients, addClient, updateClient, deleteClient,
         updateCredentials
     } = useAdmin();
 
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<'portfolio' | 'services' | 'about' | 'contact' | 'settings'>('portfolio');
+    const [activeTab, setActiveTab] = useState<'portfolio' | 'services' | 'about' | 'contact' | 'clients' | 'settings'>('portfolio');
 
     // New Item States
     const [isAddingPortfolio, setIsAddingPortfolio] = useState(false);
@@ -27,6 +28,12 @@ const Dashboard: React.FC = () => {
     const [editingHistoryId, setEditingHistoryId] = useState<number | null>(null);
     const [newHistory, setNewHistory] = useState<Partial<HistoryItem>>({
         year: '2026', title: '', desc: ''
+    });
+
+    const [isAddingClient, setIsAddingClient] = useState(false);
+    const [editingClientId, setEditingClientId] = useState<number | null>(null);
+    const [newClient, setNewClient] = useState<Partial<ClientItem>>({
+        name: '', logoUrl: ''
     });
 
     // Settings State
@@ -93,6 +100,27 @@ const Dashboard: React.FC = () => {
         setIsAddingHistory(true);
     };
 
+    const handleAddClient = () => {
+        if (newClient.name && newClient.logoUrl) {
+            if (editingClientId) {
+                updateClient({ ...newClient, id: editingClientId } as ClientItem);
+                setEditingClientId(null);
+            } else {
+                addClient(newClient as Omit<ClientItem, 'id'>);
+            }
+            setIsAddingClient(false);
+            setNewClient({ name: '', logoUrl: '' });
+        } else {
+            alert('클라이언트명과 로고 URL은 필수입니다.');
+        }
+    };
+
+    const startEditClient = (item: ClientItem) => {
+        setNewClient(item);
+        setEditingClientId(item.id);
+        setIsAddingClient(true);
+    };
+
     return (
         <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans">
             {/* Header */}
@@ -142,6 +170,12 @@ const Dashboard: React.FC = () => {
                             className={`w-full text-left px-4 py-3 rounded-xl flex items-center font-bold transition-all ${activeTab === 'contact' ? 'bg-blue-50 text-blue-600' : 'text-zinc-500 hover:bg-zinc-50'}`}
                         >
                             <PhoneIcon size={20} className="mr-3" /> 문의하기 (Contact)
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('clients')}
+                            className={`w-full text-left px-4 py-3 rounded-xl flex items-center font-bold transition-all ${activeTab === 'clients' ? 'bg-blue-50 text-blue-600' : 'text-zinc-500 hover:bg-zinc-50'}`}
+                        >
+                            <ImageIcon size={20} className="mr-3" /> 클라이언트 (Clients)
                         </button>
                         <button
                             onClick={() => setActiveTab('settings')}
@@ -415,6 +449,67 @@ const Dashboard: React.FC = () => {
                                         변경사항 적용하기
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- CLIENTS TAB --- */}
+                    {activeTab === 'clients' && (
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-zinc-900">클라이언트 CI 관리</h2>
+                                <button
+                                    onClick={() => {
+                                        setIsAddingClient(!isAddingClient);
+                                        setEditingClientId(null);
+                                        setNewClient({ name: '', logoUrl: '' });
+                                    }}
+                                    className="bg-blue-600 text-white px-5 py-2.5 rounded-xl flex items-center hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 font-bold text-sm"
+                                >
+                                    {isAddingClient ? <X size={18} className="mr-2" /> : <Plus size={18} className="mr-2" />}
+                                    {isAddingClient ? '취소' : '새 클라이언트 등록'}
+                                </button>
+                            </div>
+
+                            {isAddingClient && (
+                                <div className="bg-white p-6 rounded-2xl shadow-lg mb-8 border border-zinc-100 ring-4 ring-blue-50/50">
+                                    <h3 className="font-bold mb-4 text-lg">{editingClientId ? '클라이언트 수정' : '새 클라이언트 등록'}</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="col-span-1">
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">클라이언트명</label>
+                                            <input className="w-full border p-2.5 rounded-lg bg-zinc-50 focus:bg-white transition-colors" value={newClient.name} onChange={e => setNewClient({ ...newClient, name: e.target.value })} placeholder="ex) 삼성전자" />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">로고 이미지 URL</label>
+                                            <input className="w-full border p-2.5 rounded-lg bg-zinc-50 focus:bg-white transition-colors" value={newClient.logoUrl} onChange={e => setNewClient({ ...newClient, logoUrl: e.target.value })} placeholder="https://..." />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <button onClick={() => { setIsAddingClient(false); setEditingClientId(null); }} className="px-4 py-2 text-zinc-500 hover:bg-zinc-100 rounded-lg">취소</button>
+                                        <button onClick={handleAddClient} className="bg-black text-white px-6 py-2 rounded-lg font-bold">{editingClientId ? '수정하기' : '등록하기'}</button>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                {clients.map((item) => (
+                                    <div key={item.id} className="bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden group hover:shadow-md transition-shadow relative">
+                                        <div className="h-24 bg-zinc-50 flex items-center justify-center p-4">
+                                            <img src={item.logoUrl} alt={item.name} className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/150x80/f4f4f5/a1a1aa?text=No+Image'; }} />
+                                        </div>
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
+                                            <button onClick={() => startEditClient(item)} className="bg-white/20 text-white p-2 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-200">
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button onClick={() => deleteClient(item.id)} className="bg-white/20 text-white p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200">
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                        <div className="p-2 text-center border-t border-zinc-100">
+                                            <p className="text-xs font-bold text-zinc-700 truncate">{item.name}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     )}

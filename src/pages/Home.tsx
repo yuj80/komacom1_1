@@ -3,6 +3,7 @@ import HeroCanvas from '../components/canvas/HeroCanvas';
 import IntroSection from '../components/IntroSection';
 import PortfolioSection from '../components/PortfolioSection';
 import ServicesSection from '../components/ServicesSection';
+import ClientsSection from '../components/ClientsSection';
 import { motion } from 'framer-motion';
 
 const Home: React.FC = () => {
@@ -34,6 +35,9 @@ const Home: React.FC = () => {
 
             {/* SECTION 4: SERVICES */}
             <ServicesSection />
+
+            {/* SECTION 5: CLIENTS */}
+            <ClientsSection />
         </div>
     );
 };

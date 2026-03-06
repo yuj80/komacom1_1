@@ -25,6 +25,12 @@ export interface HistoryItem {
     desc: string;
 }
 
+export interface ClientItem {
+    id: number;
+    name: string;
+    logoUrl: string;
+}
+
 export interface AboutData {
     slogan: string;
     description: string;
@@ -64,6 +70,12 @@ interface AdminContextType {
     // Contact
     contact: ContactData;
     updateContact: (data: ContactData) => void;
+
+    // Clients
+    clients: ClientItem[];
+    addClient: (item: Omit<ClientItem, 'id'>) => void;
+    updateClient: (item: ClientItem) => void;
+    deleteClient: (id: number) => void;
 }
 
 // --- Initial Data ---
@@ -74,6 +86,15 @@ const INITIAL_PORTFOLIO: PortfolioItem[] = [
     { id: 4, title: '테크 제품 런칭', category: 'TV', type: 'image', url: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=1000&auto=format&fit=crop', color: 'from-orange-400 to-red-500' },
     { id: 5, title: '오디오북', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500' },
     { id: 6, title: '웹 드라마', category: 'Digital', type: 'image', url: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1000&auto=format&fit=crop', color: 'from-pink-500 to-rose-500' },
+];
+
+const INITIAL_CLIENTS: ClientItem[] = [
+    { id: 1, name: 'Client 1', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Brand+1' },
+    { id: 2, name: 'Client 2', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Studio+2' },
+    { id: 3, name: 'Client 3', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Partner+3' },
+    { id: 4, name: 'Client 4', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Company+4' },
+    { id: 5, name: 'Client 5', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Agency+5' },
+    { id: 6, name: 'Client 6', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Global+6' },
 ];
 
 const INITIAL_SERVICES: ServiceItem[] = [
@@ -135,6 +156,10 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         const stored = localStorage.getItem('contactData');
         return stored ? JSON.parse(stored) : INITIAL_CONTACT;
     });
+    const [clients, setClients] = useState<ClientItem[]>(() => {
+        const stored = localStorage.getItem('clientsData');
+        return stored ? JSON.parse(stored) : INITIAL_CLIENTS;
+    });
 
     // Auth State - Lazy Init
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -148,6 +173,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     useEffect(() => localStorage.setItem('servicesData', JSON.stringify(services)), [services]);
     useEffect(() => localStorage.setItem('aboutData', JSON.stringify(about)), [about]);
     useEffect(() => localStorage.setItem('contactData', JSON.stringify(contact)), [contact]);
+    useEffect(() => localStorage.setItem('clientsData', JSON.stringify(clients)), [clients]);
 
     // Listen for changes from other tabs (Cross-tab sync)
     useEffect(() => {
@@ -156,6 +182,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             if (e.key === 'servicesData' && e.newValue) setServices(JSON.parse(e.newValue));
             if (e.key === 'aboutData' && e.newValue) setAbout(JSON.parse(e.newValue));
             if (e.key === 'contactData' && e.newValue) setContact(JSON.parse(e.newValue));
+            if (e.key === 'clientsData' && e.newValue) setClients(JSON.parse(e.newValue));
             // Auth sync
             if (e.key === 'isAdmin') setIsAuthenticated(e.newValue === 'true');
         };
@@ -240,13 +267,28 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setContact(data);
     };
 
+    // Client CI Functions
+    const addClient = (item: Omit<ClientItem, 'id'>) => {
+        const newItem = { ...item, id: Date.now() };
+        setClients(prev => [newItem, ...prev]);
+    };
+
+    const updateClient = (updatedItem: ClientItem) => {
+        setClients(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+    };
+
+    const deleteClient = (id: number) => {
+        setClients(prev => prev.filter(item => item.id !== id));
+    };
+
     return (
         <AdminContext.Provider value={{
             isAuthenticated, login, logout, updateCredentials,
             portfolio, addPortfolio, updatePortfolio, deletePortfolio,
             services, updateService,
             about, updateAbout, addHistory, deleteHistory, updateHistory,
-            contact, updateContact
+            contact, updateContact,
+            clients, addClient, updateClient, deleteClient
         }}>
             {children}
         </AdminContext.Provider>
