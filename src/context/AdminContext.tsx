@@ -68,7 +68,7 @@ interface AdminContextType {
 
 // --- Initial Data ---
 const INITIAL_PORTFOLIO: PortfolioItem[] = [
-    { id: 1, title: '피자에땅', category: 'TV', type: 'image', url: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1000&auto=format&fit=crop', color: 'from-blue-500 to-indigo-600' },
+    { id: 1, title: '피자에땅', category: 'TV', type: 'video', url: 'https://youtu.be/L83BtbIapw4?si=1fD71W-u2sH7c0pS', color: 'from-blue-500 to-indigo-600' },
     { id: 2, title: '모닝 쇼', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1000&auto=format&fit=crop', color: 'from-cyan-400 to-blue-500' },
     { id: 3, title: '드라마 제작지원', category: 'PPL', type: 'image', url: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500' },
     { id: 4, title: '테크 제품 런칭', category: 'TV', type: 'image', url: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=1000&auto=format&fit=crop', color: 'from-orange-400 to-red-500' },
@@ -107,7 +107,21 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // Data State - Lazy Initialization to prevent overwriting storage with defaults on mount
     const [portfolio, setPortfolio] = useState<PortfolioItem[]>(() => {
         const stored = localStorage.getItem('portfolioData');
-        return stored ? JSON.parse(stored) : INITIAL_PORTFOLIO;
+
+        // Force update initial Pizza item to yt url if old version is cached
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                const pizzaItem = parsed.find((p: any) => p.id === 1);
+                if (pizzaItem && pizzaItem.url === 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1000&auto=format&fit=crop') {
+                    return INITIAL_PORTFOLIO;
+                }
+                return parsed;
+            } catch (e) {
+                return INITIAL_PORTFOLIO;
+            }
+        }
+        return INITIAL_PORTFOLIO;
     });
     const [services, setServices] = useState<ServiceItem[]>(() => {
         const stored = localStorage.getItem('servicesData');

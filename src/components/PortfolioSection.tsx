@@ -7,10 +7,15 @@ import type { PortfolioItem } from '../context/AdminContext';
 const getCoverImage = (project: PortfolioItem) => {
     if (project.thumbnail) return project.thumbnail;
     if (!project.url) return '';
-    const ytMatch = project.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+
+    // YouTube ID extraction regex (handles youtu.be, youtube.com/watch, embed, etc.)
+    const ytMatch = project.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+
     if (ytMatch && ytMatch[1]) {
-        return `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
+        return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
     }
+
+    // If it's not a youtube url, assume it's a direct image URL
     return project.url;
 };
 

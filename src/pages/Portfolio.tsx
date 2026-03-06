@@ -2,6 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { useAdmin } from '../context/AdminContext';
+import type { PortfolioItem } from '../context/AdminContext';
+
+const getCoverImage = (project: PortfolioItem) => {
+    if (project.thumbnail) return project.thumbnail;
+    if (!project.url) return '';
+
+    // YouTube ID extraction regex (handles youtu.be, youtube.com/watch, embed, etc.)
+    const ytMatch = project.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+
+    if (ytMatch && ytMatch[1]) {
+        return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    }
+
+    // If it's not a youtube url, assume it's a direct image URL
+    return project.url;
+};
 import { PlayCircle } from 'lucide-react';
 
 const categories = ['전체', 'TV', 'Radio', 'PPL', 'Digital'];
@@ -64,11 +80,28 @@ const Portfolio: React.FC = () => {
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 key={project.id}
                                 onClick={() => handleProjectClick(project.url)}
-                                className={`aspect-video rounded-2xl bg-gradient-to-br ${project.color} relative group overflow-hidden cursor-pointer shadow-lg`}
+                                className={`aspect-video rounded-2xl bg-zinc-900 relative group overflow-hidden cursor-pointer shadow-lg`}
                             >
+                                {/* Background Image */}
+                                {getCoverImage(project) ? (
+                                    <img
+                                        src={getCoverImage(project)}
+                                        alt={project.title}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        onError={(e) => {
+                                            if (e.currentTarget.src.includes('maxresdefault.jpg')) {
+                                                e.currentTarget.src = e.currentTarget.src.replace('maxresdefault.jpg', 'hqdefault.jpg');
+                                            }
+                                        }}
+                                    />
+                                ) : null}
+
+                                {/* Gradient Overlay */}
+                                <div className={`absolute inset-0 bg-gradient-to-br ${project.color} ${getCoverImage(project) ? 'opacity-40 group-hover:opacity-60' : 'opacity-100'} transition-opacity duration-500`} />
+
                                 {/* Thumbnail/Video Indicator */}
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    {project.type === 'video' && <PlayCircle className="text-white opacity-80 group-hover:scale-110 transition-transform" size={64} />}
+                                <div className="absolute inset-0 flex items-center justify-center z-10">
+                                    {project.type === 'video' && <PlayCircle className="text-white opacity-80 group-hover:scale-110 transition-transform shadow-md rounded-full" size={64} />}
                                 </div>
 
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-end pb-8 text-center backdrop-blur-sm">
