@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { useAdmin } from '../context/AdminContext';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
@@ -13,18 +14,47 @@ const Contact: React.FC = () => {
         message: ''
     });
 
-    const handleEmailSend = () => {
-        const subject = `[${formData.type}] ${formData.name}님의 홈페이지 문의`;
-        const body = `이름: ${formData.name}
-이메일: ${formData.email}
-연락처: ${formData.phone}
-문의 유형: ${formData.type}
+    const [isSending, setIsSending] = useState(false);
 
-내용:
-${formData.message}
-`;
-        const mailtoLink = `mailto:koma@komacom.co.kr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
+    const handleEmailSend = async () => {
+        // Basic validation
+        if (!formData.name || !formData.email || !formData.phone || !formData.message) {
+            alert('모든 필수 항목(이름, 이메일, 연락처, 메시지)을 입력해주세요.');
+            return;
+        }
+
+        setIsSending(true);
+
+        try {
+            await emailjs.send(
+                'service_h4gp2yn', // Service ID
+                'template_pln0jnq', // Template ID
+                {
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    type: formData.type,
+                    message: formData.message,
+                },
+                'U8NS7z-1dr992x2RO' // Public Key
+            );
+
+            alert('성공적으로 메일이 발송되었습니다! 코마커뮤니케이션에서 빠르게 확인 후 연락드리겠습니다.');
+
+            // 폼 초기화
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                type: '일반 문의',
+                message: ''
+            });
+        } catch (error) {
+            console.error('Email 전송 실패:', error);
+            alert('메일 전송에 실패했습니다. 잠시 후 다시 시도해주시거나, 카카오톡 채널을 이용해주세요.');
+        } finally {
+            setIsSending(false);
+        }
     };
 
     return (
@@ -97,8 +127,8 @@ ${formData.message}
                             <textarea value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 h-40 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="프로젝트에 대해 알려주세요..."></textarea>
                         </div>
 
-                        <button type="button" onClick={handleEmailSend} className="w-full block text-center bg-black text-white font-bold py-4 rounded-lg hover:bg-zinc-800 transition-colors text-lg shadow-lg">
-                            이메일로 전송하기
+                        <button type="button" onClick={handleEmailSend} disabled={isSending} className="w-full block text-center bg-black text-white font-bold py-4 rounded-lg hover:bg-zinc-800 transition-colors text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                            {isSending ? '전송 중입니다...' : '이메일로 전송하기'}
                         </button>
                     </form>
                 </div>
