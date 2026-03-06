@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
                 {/* Left: Branding & CTA */}
                 <div>
                     <div className="mb-8">
-                        <img src="/logo.jpg" alt="KOMACOM" className="h-10 md:h-12 object-contain mix-blend-multiply" />
+                        <img src="/logo-new.png" alt="KOMACOM" className="h-10 md:h-12 object-contain" />
                     </div>
 
                     <h2 className="text-3xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-900 break-keep">

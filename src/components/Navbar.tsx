@@ -29,8 +29,8 @@ const Navbar: React.FC = () => {
                 } flex items-center justify-between px-6 md:px-12`}
         >
             {/* Logo */}
-            <Link to="/" className="z-50 relative">
-                <img src="/logo.jpg" alt="KOMACOM" className="h-8 md:h-10 object-contain block mix-blend-multiply" />
+            <Link to="/" className="z-50 relative flex items-center">
+                <img src="/logo-new.png" alt="KOMACOM" className="h-8 md:h-10 object-contain block" />
             </Link>
 
             {/* Desktop Menu */}
