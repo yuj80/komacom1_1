@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
                 </div>
 
                 {/* Right: Info */}
-                <div className="space-y-6 text-zinc-600 font-medium">
+                <div className="space-y-6 text-zinc-800 font-bold">
                     <div className="flex items-start space-x-4">
                         <MapPin className="mt-1 flex-shrink-0 text-rose-500" size={20} />
                         <p>{contact.address}</p>
