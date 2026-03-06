@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAdmin } from '../context/AdminContext';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 const Contact: React.FC = () => {
     const { contact } = useAdmin();
+
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        type: '일반 문의',
+        message: ''
+    });
+
+    const handleEmailSend = () => {
+        const subject = `[${formData.type}] ${formData.name}님의 홈페이지 문의`;
+        const body = `이름: ${formData.name}
+이메일: ${formData.email}
+연락처: ${formData.phone}
+문의 유형: ${formData.type}
+
+내용:
+${formData.message}
+`;
+        const mailtoLink = `mailto:koma@komacom.co.kr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
+    };
 
     return (
         <div className="bg-white text-zinc-900 min-h-screen pt-32 pb-20">
@@ -49,21 +71,21 @@ const Contact: React.FC = () => {
                         <div className="grid grid-cols-1 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-zinc-700">이름</label>
-                                <input type="text" className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="성함을 입력해주세요" />
+                                <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="성함을 입력해주세요" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-zinc-700">이메일</label>
-                                <input type="email" className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="your@email.com" />
+                                <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="your@email.com" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-zinc-700">연락처</label>
-                                <input type="tel" className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="010-0000-0000" />
+                                <input type="tel" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="010-0000-0000" />
                             </div>
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-zinc-700">문의 유형</label>
-                            <select className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-zinc-700">
+                            <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })} className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-zinc-700">
                                 <option>일반 문의</option>
                                 <option>프로젝트 의뢰</option>
                                 <option>채용 관련</option>
@@ -72,12 +94,12 @@ const Contact: React.FC = () => {
 
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-zinc-700">메시지</label>
-                            <textarea className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 h-40 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="프로젝트에 대해 알려주세요..."></textarea>
+                            <textarea value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 h-40 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="프로젝트에 대해 알려주세요..."></textarea>
                         </div>
 
-                        <a href="http://pf.kakao.com/_Dpxgxjn/chat" target="_blank" rel="noopener noreferrer" className="w-full block text-center bg-[#FEE500] text-[#191919] font-bold py-4 rounded-lg hover:bg-[#FADA0A] transition-colors text-lg shadow-lg">
-                            카카오톡으로 문의하기
-                        </a>
+                        <button type="button" onClick={handleEmailSend} className="w-full block text-center bg-black text-white font-bold py-4 rounded-lg hover:bg-zinc-800 transition-colors text-lg shadow-lg">
+                            이메일로 전송하기
+                        </button>
                     </form>
                 </div>
             </div>
