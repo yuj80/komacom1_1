@@ -71,8 +71,8 @@ const Contact: React.FC = () => {
                             <textarea className="w-full bg-gray-50 border border-zinc-200 rounded-lg px-4 py-3 h-40 focus:outline-none focus:border-blue-500 focus:bg-white transition-all" placeholder="프로젝트에 대해 알려주세요..."></textarea>
                         </div>
 
-                        <a href="sms:01092423847" className="w-full block text-center bg-black text-white font-bold py-4 rounded-lg hover:bg-zinc-800 transition-colors text-lg shadow-lg">
-                            문자(SMS)로 전송하기
+                        <a href="mailto:koma@komacom.co.kr" className="w-full block text-center bg-black text-white font-bold py-4 rounded-lg hover:bg-zinc-800 transition-colors text-lg shadow-lg">
+                            이메일 전송하기
                         </a>
                     </form>
                 </div>
