@@ -49,16 +49,46 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
                                 고객의 목표 달성을 위해 <strong className="text-rose-700">{item}</strong> 영역에서<br />
                                 차별화된 전략과 크리에이티브를 제공합니다.
                             </p>
-                            {item === '라디오 CM' && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1, duration: 0.3 }}
-                                    className="mt-5 flex justify-center w-full"
-                                >
-                                    <img src="/radio_cm.jpg" alt="라디오 CM" className="w-[90%] md:w-4/5 max-w-xs h-auto object-cover rounded-xl shadow-md border border-zinc-100" />
-                                </motion.div>
-                            )}
+
+                            {/* Hover Images */}
+                            {(() => {
+                                const imageMap: Record<string, string | string[]> = {
+                                    '라디오 CM': ['/radio_cm.jpg', '/radio.jpg'],
+                                    '오디오 브랜딩': '/radio.jpg',
+                                    'TV CF': '/tvcf.jpg',
+                                    '케이블 TV 광고': '/tvcf.jpg',
+                                    '드라마 PPL': '/ppl.jpg',
+                                    '예능 프로그램 협찬': '/ppl.jpg',
+                                    '유튜브 콘텐츠': '/youtube.jpg',
+                                };
+
+                                const images = imageMap[item];
+                                if (!images) return null;
+
+                                const imgArray = Array.isArray(images) ? images : [images];
+
+                                return (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.1, duration: 0.3 }}
+                                        className={`mt-6 grid gap-4 ${imgArray.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} w-full`}
+                                    >
+                                        {imgArray.map((src, idx) => (
+                                            <div key={idx} className="flex justify-center flex-col items-center group/img relative overflow-hidden rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-zinc-100/50 bg-white">
+                                                <div className="w-full aspect-video relative overflow-hidden bg-zinc-50">
+                                                    <img
+                                                        src={src}
+                                                        alt={`${item} 예시 ${idx + 1}`}
+                                                        className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-300" />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </motion.div>
+                                );
+                            })()}
                         </div>
                     </motion.div>
                 )}
