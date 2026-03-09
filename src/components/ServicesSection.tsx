@@ -68,6 +68,11 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
                                     if (text.includes('라디오')) {
                                         return ['/radio_cm.jpg', '/radio.jpg'];
                                     }
+
+                                    if (text.includes('소셜') || text.includes('media') || text.includes('sns') || text.includes('미디어')) {
+                                        return ['/social.jpg'];
+                                    }
+
                                     if (text.includes('오디오')) return ['/radio.jpg'];
                                     if (text.includes('tv') || text.includes('cf') || text.includes('티비')) return ['/tvcf.jpg'];
                                     if (text.includes('ppl') || text.includes('협찬') || text.includes('드라마') || text.includes('예능')) return ['/ppl.jpg'];
