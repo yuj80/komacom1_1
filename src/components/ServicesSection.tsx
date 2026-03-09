@@ -52,27 +52,32 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
 
                             {/* Hover Images */}
                             {(() => {
-                                const imageMap: Record<string, string | string[]> = {
-                                    '라디오 CM': ['/radio_cm.jpg', '/radio.jpg'],
-                                    '오디오 브랜딩': '/radio.jpg',
-                                    'TV CF': '/tvcf.jpg',
-                                    '케이블 TV 광고': '/tvcf.jpg',
-                                    '드라마 PPL': '/ppl.jpg',
-                                    '예능 프로그램 협찬': '/ppl.jpg',
-                                    '유튜브 콘텐츠': '/youtube.jpg',
+                                const getImagesForItem = (itemName: string): string[] => {
+                                    const text = itemName.toLowerCase().replace(/\s+/g, '');
+
+                                    if (text.includes('라디오')) {
+                                        return ['/radio_cm.jpg', '/radio.jpg', '/internetradio.jpg'];
+                                    }
+                                    if (text.includes('오디오')) return ['/radio.jpg'];
+                                    if (text.includes('tv') || text.includes('cf') || text.includes('티비')) return ['/tvcf.jpg'];
+                                    if (text.includes('ppl') || text.includes('협찬') || text.includes('드라마') || text.includes('예능')) return ['/ppl.jpg'];
+                                    if (text.includes('유튜브') || text.includes('youtube') || text.includes('콘텐츠')) return ['/youtube.jpg'];
+                                    if (text.includes('인터넷')) return ['/internetradio.jpg'];
+
+                                    return [];
                                 };
 
-                                const images = imageMap[item];
-                                if (!images) return null;
+                                const imgArray = getImagesForItem(item);
+                                if (imgArray.length === 0) return null;
 
-                                const imgArray = Array.isArray(images) ? images : [images];
+                                const gridCols = imgArray.length === 1 ? 'grid-cols-1' : imgArray.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3';
 
                                 return (
                                     <motion.div
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.1, duration: 0.3 }}
-                                        className={`mt-6 grid gap-4 ${imgArray.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} w-full`}
+                                        className={`mt-6 grid gap-4 ${gridCols} w-full`}
                                     >
                                         {imgArray.map((src, idx) => (
                                             <div key={idx} className="flex justify-center flex-col items-center group/img relative overflow-hidden rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-zinc-100/50 bg-white">
