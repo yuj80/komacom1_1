@@ -73,6 +73,13 @@ const Navbar: React.FC = () => {
                             {link.name}
                         </Link>
                     ))}
+                    <Link
+                        to="/contact"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="mt-8 px-8 py-3 rounded-full bg-zinc-900 text-white text-lg font-bold hover:bg-rose-600 transition-all shadow-lg"
+                    >
+                        프로젝트 문의하기
+                    </Link>
                 </div>
             )}
         </nav>

@@ -49,6 +49,16 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
                                 고객의 목표 달성을 위해 <strong className="text-rose-700">{item}</strong> 영역에서<br />
                                 차별화된 전략과 크리에이티브를 제공합니다.
                             </p>
+                            {item === '라디오 CM' && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1, duration: 0.3 }}
+                                    className="mt-5 flex justify-center w-full"
+                                >
+                                    <img src="/radio_cm.jpg" alt="라디오 CM" className="w-[90%] md:w-4/5 max-w-xs h-auto object-cover rounded-xl shadow-md border border-zinc-100" />
+                                </motion.div>
+                            )}
                         </div>
                     </motion.div>
                 )}
