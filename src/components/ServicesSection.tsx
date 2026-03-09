@@ -55,18 +55,21 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
                                 const getImagesForItem = (itemName: string): string[] => {
                                     const text = itemName.toLowerCase().replace(/\s+/g, '');
 
+                                    // Check for internet radio specifically first to prevent '라디오' from overriding
+                                    if (text.includes('인터넷') || text.includes('internet')) {
+                                        return ['/internetradio.jpg'];
+                                    }
+
                                     if (text.includes('라디오')) {
-                                        return ['/radio_cm.jpg', '/radio.jpg', '/internetradio.jpg'];
+                                        return ['/radio_cm.jpg', '/radio.jpg'];
                                     }
                                     if (text.includes('오디오')) return ['/radio.jpg'];
                                     if (text.includes('tv') || text.includes('cf') || text.includes('티비')) return ['/tvcf.jpg'];
                                     if (text.includes('ppl') || text.includes('협찬') || text.includes('드라마') || text.includes('예능')) return ['/ppl.jpg'];
                                     if (text.includes('유튜브') || text.includes('youtube') || text.includes('콘텐츠')) return ['/youtube.jpg'];
-                                    if (text.includes('인터넷')) return ['/internetradio.jpg'];
 
                                     return [];
                                 };
-
                                 const imgArray = getImagesForItem(item);
                                 if (imgArray.length === 0) return null;
 
