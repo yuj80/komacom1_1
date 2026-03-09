@@ -158,7 +158,20 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     });
     const [clients, setClients] = useState<ClientItem[]>(() => {
         const stored = localStorage.getItem('clientsData');
-        return stored ? JSON.parse(stored) : INITIAL_CLIENTS;
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                // Force update if old placeholder is found on the first client (cache invalidate)
+                const firstClient = parsed.find((p: any) => p.id === 1);
+                if (firstClient && firstClient.logoUrl && (firstClient.logoUrl.includes('via.placeholder.com') || firstClient.logoUrl.includes('placeholder'))) {
+                    return INITIAL_CLIENTS;
+                }
+                return parsed;
+            } catch (e) {
+                return INITIAL_CLIENTS;
+            }
+        }
+        return INITIAL_CLIENTS;
     });
 
     // Auth State - Lazy Init
