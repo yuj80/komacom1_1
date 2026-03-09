@@ -89,12 +89,12 @@ const INITIAL_PORTFOLIO: PortfolioItem[] = [
 ];
 
 const INITIAL_CLIENTS: ClientItem[] = [
-    { id: 1, name: 'Client 1', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Brand+1' },
-    { id: 2, name: 'Client 2', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Studio+2' },
-    { id: 3, name: 'Client 3', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Partner+3' },
-    { id: 4, name: 'Client 4', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Company+4' },
-    { id: 5, name: 'Client 5', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Agency+5' },
-    { id: 6, name: 'Client 6', logoUrl: 'https://via.placeholder.com/150x80/27272a/ffffff?text=Global+6' },
+    { id: 1, name: 'Client 1 (TV CF)', logoUrl: '/tvcf.jpg' },
+    { id: 2, name: 'Client 2 (Radio CM)', logoUrl: '/radio_cm.jpg' },
+    { id: 3, name: 'Client 3 (PPL)', logoUrl: '/ppl.jpg' },
+    { id: 4, name: 'Client 4 (YouTube)', logoUrl: '/youtube.jpg' },
+    { id: 5, name: 'Client 5 (Radio)', logoUrl: '/radio.jpg' },
+    { id: 6, name: 'Client 6 (Logo)', logoUrl: '/logo.jpg' },
 ];
 
 const INITIAL_SERVICES: ServiceItem[] = [

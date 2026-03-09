@@ -307,6 +307,15 @@ const Dashboard: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
+                            <div className="mt-8 flex justify-end pb-8">
+                                <button
+                                    onClick={() => alert('서비스 카테고리 정보가 성공적으로 적용되었습니다.')}
+                                    className="bg-black text-white px-6 py-3 rounded-xl font-bold flex items-center hover:bg-zinc-800 transition-colors shadow-lg"
+                                >
+                                    <Save size={18} className="mr-2" />
+                                    서비스 변경사항 적용하기
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -334,6 +343,15 @@ const Dashboard: React.FC = () => {
                                         value={about.description}
                                         onChange={(e) => updateAbout({ ...about, description: e.target.value })}
                                     />
+                                </div>
+                                <div className="pt-4 border-t border-zinc-100 flex justify-end">
+                                    <button
+                                        onClick={() => alert('회사 소개 정보가 성공적으로 적용되었습니다.')}
+                                        className="bg-black text-white px-6 py-3 rounded-xl font-bold flex items-center hover:bg-zinc-800 transition-colors shadow-lg"
+                                    >
+                                        <Save size={18} className="mr-2" />
+                                        회사 소개 변경사항 적용하기
+                                    </button>
                                 </div>
                             </div>
 
