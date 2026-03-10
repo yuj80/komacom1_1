@@ -170,7 +170,19 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     });
     const [contact, setContact] = useState<ContactData>(() => {
         const stored = localStorage.getItem('contactData');
-        return stored ? JSON.parse(stored) : INITIAL_CONTACT;
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                // Force inject fax if old cache is missing it
+                if (!parsed.fax) {
+                    return { ...parsed, fax: INITIAL_CONTACT.fax };
+                }
+                return parsed;
+            } catch (e) {
+                return INITIAL_CONTACT;
+            }
+        }
+        return INITIAL_CONTACT;
     });
     const [clients, setClients] = useState<ClientItem[]>(() => {
         const stored = localStorage.getItem('clientsData');
