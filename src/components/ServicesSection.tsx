@@ -60,6 +60,10 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
                                         return ['/internetradio.jpg'];
                                     }
 
+                                    if (text.includes('가상광고')) {
+                                        return ['/virtual_ad.jpg'];
+                                    }
+
                                     // Check for TV sponsorship specifically to prevent generic 'tv' or '협찬' from overriding
                                     if (text.includes('tv협찬') || text.includes('티비협찬')) {
                                         return ['/tvppl.jpg'];
