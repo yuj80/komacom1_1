@@ -18,7 +18,7 @@ const getCoverImage = (project: PortfolioItem) => {
     // If it's not a youtube url, assume it's a direct image URL
     return project.url;
 };
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, X } from 'lucide-react';
 
 const categories = ['전체', 'TV', 'Radio', 'PPL', 'Digital'];
 
@@ -27,6 +27,12 @@ const Portfolio: React.FC = () => {
     const [searchParams] = useSearchParams();
     const initialFilter = searchParams.get('category') || '전체';
     const [filter, setFilter] = useState(initialFilter);
+    const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+
+    const getYoutubeEmbedUrl = (url: string) => {
+        const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+        return ytMatch && ytMatch[1] ? `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1` : url;
+    };
 
     // Sync state with URL when URL changes (e.g. navigation from home)
     useEffect(() => {
@@ -44,8 +50,13 @@ const Portfolio: React.FC = () => {
         ? portfolio
         : portfolio.filter(p => p.category === filter);
 
-    const handleProjectClick = (url: string) => {
-        if (url) window.open(url, '_blank');
+    const handleProjectClick = (project: PortfolioItem) => {
+        if (!project.url) return;
+        if (project.type === 'video') {
+            setSelectedVideo(getYoutubeEmbedUrl(project.url));
+        } else {
+            window.open(project.url, '_blank');
+        }
     };
 
     return (
@@ -79,7 +90,7 @@ const Portfolio: React.FC = () => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 key={project.id}
-                                onClick={() => handleProjectClick(project.url)}
+                                onClick={() => handleProjectClick(project)}
                                 className={`aspect-video rounded-2xl bg-zinc-900 relative group overflow-hidden cursor-pointer shadow-lg`}
                             >
                                 {/* Background Image */}
@@ -113,6 +124,41 @@ const Portfolio: React.FC = () => {
                     </AnimatePresence>
                 </motion.div>
             </div>
+
+            {/* Video Modal */}
+            <AnimatePresence>
+                {selectedVideo && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedVideo(null)}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 md:p-10 backdrop-blur-sm"
+                    >
+                        <button
+                            onClick={() => setSelectedVideo(null)}
+                            className="absolute right-4 top-4 md:right-10 md:top-10 text-white hover:text-zinc-300 transition-colors p-2 bg-white/10 rounded-full hover:bg-white/20"
+                        >
+                            <X size={32} />
+                        </button>
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="relative w-full max-w-6xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+                        >
+                            <iframe
+                                src={selectedVideo}
+                                title="YouTube video player"
+                                className="absolute inset-0 w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
