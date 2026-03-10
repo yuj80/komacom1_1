@@ -65,6 +65,11 @@ const SubServiceItem = ({ item }: { item: string, index?: number }) => {
                                         return ['/tvppl.jpg'];
                                     }
 
+                                    // Check for Radio sponsorship specifically to prevent generic '라디오' or '협찬' from overriding
+                                    if (text.includes('radio협찬') || text.includes('라디오협찬')) {
+                                        return ['/radioppl.jpg'];
+                                    }
+
                                     if (text.includes('라디오')) {
                                         return ['/radio_cm.jpg', '/radio.jpg'];
                                     }
