@@ -100,10 +100,10 @@ const INITIAL_CLIENTS: ClientItem[] = [
 ];
 
 const INITIAL_SERVICES: ServiceItem[] = [
-    { id: 1, title: '방송 광고 (Broadcast Media)', description: 'TV 광고를 위한 종합적인 기획 및 실행. 스토리보드부터 최종 송출까지 책임집니다.', subItems: ['TV CF', '케이블 TV 광고', 'IPTV 솔루션'] },
-    { id: 2, title: '라디오 마케팅 (Radio Marketing)', description: '청취자의 귀를 사로잡는 매력적인 오디오 콘텐츠. 성우 캐스팅, 녹음, 매체 구매까지.', subItems: ['라디오 CM', '팟캐스트 광고', '오디오 브랜딩'] },
-    { id: 3, title: '스폰서십 & PPL', description: '드라마 및 예능 프로그램 내 전략적 제품 노출로 자연스러운 브랜드 인지도 상승 효과.', subItems: ['드라마 PPL', '예능 프로그램 협찬', '가상 광고'] },
-    { id: 4, title: '디지털 & 인터랙티브', description: 'SNS, 유튜브, 인터랙티브 웹 경험을 포함한 풀퍼널 디지털 마케팅 전략.', subItems: ['유튜브 콘텐츠', '소셜 미디어 운영', '웹 개발'] },
+    { id: 1, title: '방송 광고 (Broadcast Media)', description: 'TV 광고를 위한 종합적인 기획 및 실행. 스토리보드부터 최종 송출까지 책임집니다.', subItems: ['TV CF', 'TV협찬광고', 'RADIO협찬광고'] },
+    { id: 2, title: '라디오 마케팅 (Radio Marketing)', description: '청취자의 귀를 사로잡는 매력적인 오디오 콘텐츠. 성우 캐스팅, 녹음, 매체 구매까지.', subItems: ['라디오CM', '인터넷라디오'] },
+    { id: 3, title: '스폰서십 & PPL', description: '드라마 및 예능 프로그램 내 전략적 제품 노출로 자연스러운 브랜드 인지도 상승 효과.', subItems: ['드라마&예능 PPL', '가상광고'] },
+    { id: 4, title: '디지털 & 인터랙티브', description: 'SNS, 유튜브, 인터랙티브 웹 경험을 포함한 풀퍼널 디지털 마케팅 전략.', subItems: ['유튜브 콘텐츠', '소셜 미디어 운영'] },
 ];
 
 const INITIAL_ABOUT: AboutData = {
@@ -148,7 +148,19 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     });
     const [services, setServices] = useState<ServiceItem[]>(() => {
         const stored = localStorage.getItem('servicesData');
-        return stored ? JSON.parse(stored) : INITIAL_SERVICES;
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                // Force update if old subitem structures are found (cache invalidate)
+                if (parsed[0] && parsed[0].subItems && parsed[0].subItems.includes('케이블 TV 광고')) {
+                    return INITIAL_SERVICES;
+                }
+                return parsed;
+            } catch (e) {
+                return INITIAL_SERVICES;
+            }
+        }
+        return INITIAL_SERVICES;
     });
     const [about, setAbout] = useState<AboutData>(() => {
         const stored = localStorage.getItem('aboutData');
