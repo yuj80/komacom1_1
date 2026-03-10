@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
     const [isAddingPortfolio, setIsAddingPortfolio] = useState(false);
     const [editingPortfolioId, setEditingPortfolioId] = useState<number | null>(null);
     const [newPortfolio, setNewPortfolio] = useState<Partial<PortfolioItem>>({
-        title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600'
+        title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: ''
     });
 
     const [isAddingHistory, setIsAddingHistory] = useState(false);
@@ -66,7 +66,7 @@ const Dashboard: React.FC = () => {
                 addPortfolio(newPortfolio as Omit<PortfolioItem, 'id'>);
             }
             setIsAddingPortfolio(false);
-            setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600' });
+            setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: '' });
         } else {
             alert('제목과 URL은 필수입니다.');
         }
@@ -198,7 +198,7 @@ const Dashboard: React.FC = () => {
                                     onClick={() => {
                                         setIsAddingPortfolio(!isAddingPortfolio);
                                         setEditingPortfolioId(null);
-                                        setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600' });
+                                        setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: '' });
                                     }}
                                     className="bg-blue-600 text-white px-5 py-2.5 rounded-xl flex items-center hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 font-bold text-sm"
                                 >
@@ -234,6 +234,14 @@ const Dashboard: React.FC = () => {
                                         <div className="col-span-2">
                                             <label className="block text-xs font-bold text-zinc-500 mb-1">배경색 (Tailwind Classes)</label>
                                             <input className="w-full border p-2.5 rounded-lg bg-zinc-50" value={newPortfolio.color} onChange={e => setNewPortfolio({ ...newPortfolio, color: e.target.value })} placeholder="from-blue-500 to-indigo-600" />
+                                        </div>
+                                        <div className="col-span-2">
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">상세 레이아웃 추가 이미지 링크들 (엔터키로 구분)</label>
+                                            <textarea className="w-full border p-2.5 rounded-lg bg-zinc-50 min-h-[100px]" value={newPortfolio.detailImages?.join('\n') || ''} onChange={e => setNewPortfolio({ ...newPortfolio, detailImages: e.target.value.split('\n').filter(url => url.trim() !== '') })} placeholder="https://image1.jpg&#10;https://image2.jpg" />
+                                        </div>
+                                        <div className="col-span-2">
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">본문 설명 내용 (선택 옵션)</label>
+                                            <textarea className="w-full border p-2.5 rounded-lg bg-zinc-50 min-h-[80px]" value={newPortfolio.content} onChange={e => setNewPortfolio({ ...newPortfolio, content: e.target.value })} placeholder="프로젝트에 대한 추가적인 설명이 필요할 경우 작성하세요." />
                                         </div>
                                     </div>
                                     <div className="flex justify-end gap-2">

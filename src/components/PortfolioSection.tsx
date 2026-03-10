@@ -59,7 +59,7 @@ const PortfolioSection = () => {
                                 <h3 className="text-4xl md:text-6xl font-black drop-shadow-md">{project.title}</h3>
                                 <p className="mt-4 text-xl font-medium opacity-90">{project.category}</p>
                                 <button
-                                    onClick={() => navigate(`/portfolio?category=${project.category}`)}
+                                    onClick={() => navigate(`/portfolio/${project.id}`)}
                                     className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-bold text-black opacity-0 transition-opacity duration-300 group-hover:opacity-100 shadow-md transform translate-y-4 group-hover:translate-y-0"
                                 >
                                     프로젝트 보기

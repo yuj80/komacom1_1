@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Company from './pages/Company';
 import Business from './pages/Business';
 import Portfolio from './pages/Portfolio';
+import PortfolioDetail from './pages/PortfolioDetail';
 import Contact from './pages/Contact';
 
 // Admin Import
@@ -30,6 +31,7 @@ const AppContent = () => {
               <Route path="/company" element={<Company />} />
               <Route path="/business" element={<Business />} />
               <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/portfolio/:id" element={<PortfolioDetail />} />
               <Route path="/contact" element={<Contact />} />
             </Routes>
           </Layout>

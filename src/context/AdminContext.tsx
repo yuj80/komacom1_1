@@ -8,6 +8,8 @@ export interface PortfolioItem {
     type: 'image' | 'video';
     url: string; // Image URL or Youtube/Video URL
     thumbnail?: string; // For video thumbnails
+    detailImages?: string[]; // Multiple additional images
+    content?: string; // Additional text content if needed
     color: string; // Gradient class
 }
 
@@ -80,12 +82,12 @@ interface AdminContextType {
 
 // --- Initial Data ---
 const INITIAL_PORTFOLIO: PortfolioItem[] = [
-    { id: 1, title: '피자에땅', category: 'TV', type: 'video', url: 'https://youtu.be/L83BtbIapw4?si=1fD71W-u2sH7c0pS', color: 'from-blue-500 to-indigo-600' },
-    { id: 2, title: '모닝 쇼', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1000&auto=format&fit=crop', color: 'from-cyan-400 to-blue-500' },
-    { id: 3, title: '드라마 제작지원', category: 'PPL', type: 'image', url: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500' },
-    { id: 4, title: '테크 제품 런칭', category: 'TV', type: 'image', url: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=1000&auto=format&fit=crop', color: 'from-orange-400 to-red-500' },
-    { id: 5, title: '오디오북', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500' },
-    { id: 6, title: '웹 드라마', category: 'Digital', type: 'image', url: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1000&auto=format&fit=crop', color: 'from-pink-500 to-rose-500' },
+    { id: 1, title: '피자에땅', category: 'TV', type: 'video', url: 'https://youtu.be/L83BtbIapw4?si=1fD71W-u2sH7c0pS', color: 'from-blue-500 to-indigo-600', detailImages: [] },
+    { id: 2, title: '모닝 쇼', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1000&auto=format&fit=crop', color: 'from-cyan-400 to-blue-500', detailImages: [] },
+    { id: 3, title: '드라마 제작지원', category: 'PPL', type: 'image', url: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500', detailImages: [] },
+    { id: 4, title: '테크 제품 런칭', category: 'TV', type: 'image', url: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=1000&auto=format&fit=crop', color: 'from-orange-400 to-red-500', detailImages: [] },
+    { id: 5, title: '오디오북', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500', detailImages: [] },
+    { id: 6, title: '웹 드라마', category: 'Digital', type: 'image', url: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1000&auto=format&fit=crop', color: 'from-pink-500 to-rose-500', detailImages: [] },
 ];
 
 const INITIAL_CLIENTS: ClientItem[] = [
