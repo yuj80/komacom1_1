@@ -435,7 +435,7 @@ const Dashboard: React.FC = () => {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div>
                                         <label className="block text-sm font-bold text-zinc-500 mb-2">이메일</label>
                                         <input
@@ -450,6 +450,14 @@ const Dashboard: React.FC = () => {
                                             className="w-full border p-3 rounded-lg bg-zinc-50"
                                             value={editingContact.phone}
                                             onChange={(e) => setEditingContact({ ...editingContact, phone: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-zinc-500 mb-2">팩스번호</label>
+                                        <input
+                                            className="w-full border p-3 rounded-lg bg-zinc-50"
+                                            value={editingContact.fax || ''}
+                                            onChange={(e) => setEditingContact({ ...editingContact, fax: e.target.value })}
                                         />
                                     </div>
                                 </div>

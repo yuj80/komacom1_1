@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Printer } from 'lucide-react';
 
 import { useAdmin } from '../context/AdminContext';
 
@@ -43,6 +43,12 @@ const Footer: React.FC = () => {
                         <Phone size={20} className="text-rose-500" />
                         <p>{contact.phone}</p>
                     </div>
+                    {contact.fax && (
+                        <div className="flex items-center space-x-4">
+                            <Printer size={20} className="text-rose-500" />
+                            <p>{contact.fax}</p>
+                        </div>
+                    )}
                     <div className="pt-8 flex items-center gap-2 text-xs text-zinc-400">
                         <p>Copyright © 2026 KOMA Communication. All Rights Reserved.</p>
                         <Link to="/admin/dashboard" className="opacity-20 hover:opacity-100 transition-opacity text-zinc-400" title="Admin Access">

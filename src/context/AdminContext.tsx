@@ -44,6 +44,7 @@ export interface ContactData {
     address: string;
     email: string;
     phone: string;
+    fax: string;
 }
 
 interface AdminContextType {
@@ -121,7 +122,8 @@ const INITIAL_CONTACT: ContactData = {
     introText: '프로젝트를 시작할 준비가 되셨나요? 언제든 문의해주세요.',
     address: '서울시 영등포구 국회대로 70길 7 동아빌딩 3층',
     email: 'koma@komacom.co.kr',
-    phone: '02-785-5563'
+    phone: '02-785-5563',
+    fax: '02-785-2287'
 };
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);

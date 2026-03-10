@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { useAdmin } from '../context/AdminContext';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Printer } from 'lucide-react';
 
 const Contact: React.FC = () => {
     const { contact } = useAdmin();
@@ -93,6 +93,16 @@ const Contact: React.FC = () => {
                                 <p className="text-zinc-600">{contact.phone}</p>
                             </div>
                         </div>
+
+                        {contact.fax && (
+                            <div className="flex items-start space-x-4">
+                                <Printer className="mt-1 flex-shrink-0 text-blue-600" size={24} />
+                                <div>
+                                    <p className="font-bold text-zinc-900">팩스번호</p>
+                                    <p className="text-zinc-600">{contact.fax}</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Form Column */}
