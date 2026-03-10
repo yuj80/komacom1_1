@@ -47,9 +47,71 @@ const SubServiceItem = ({ item }: { item: string }) => {
                     >
                         <div className="px-4 pb-5 pl-[4.5rem]">
                             <p className="text-zinc-600 text-sm leading-relaxed">
-                                고객의 목표 달성을 위해 <strong>{item}</strong> 영역에서<br />
+                                고객의 목표 달성을 위해 <strong className="text-blue-700">{item}</strong> 영역에서<br />
                                 차별화된 전략과 크리에이티브를 제공합니다.
                             </p>
+
+                            {/* Hover Images */}
+                            {(() => {
+                                const getImagesForItem = (itemName: string): string[] => {
+                                    const text = itemName.toLowerCase().replace(/\s+/g, '');
+
+                                    if (text.includes('인터넷') || text.includes('internet')) {
+                                        return ['/internetradio.jpg'];
+                                    }
+
+                                    if (text.includes('가상광고')) {
+                                        return ['/virtual_ad.jpg'];
+                                    }
+
+                                    if (text.includes('tv협찬') || text.includes('티비협찬')) {
+                                        return ['/tvppl.jpg'];
+                                    }
+
+                                    if (text.includes('radio협찬') || text.includes('라디오협찬')) {
+                                        return ['/radioppl.jpg'];
+                                    }
+
+                                    if (text.includes('라디오')) {
+                                        return ['/radio_cm.jpg', '/radio.jpg'];
+                                    }
+
+                                    if (text.includes('소셜') || text.includes('media') || text.includes('sns') || text.includes('미디어')) {
+                                        return ['/social.jpg'];
+                                    }
+
+                                    if (text.includes('오디오')) return ['/radio.jpg'];
+                                    if (text.includes('tv') || text.includes('cf') || text.includes('티비')) return ['/tvcf.jpg'];
+                                    if (text.includes('ppl') || text.includes('협찬') || text.includes('드라마') || text.includes('예능')) return ['/ppl.jpg'];
+                                    if (text.includes('유튜브') || text.includes('youtube') || text.includes('콘텐츠')) return ['/youtube.jpg'];
+
+                                    return [];
+                                };
+                                const imgArray = getImagesForItem(item);
+                                if (imgArray.length === 0) return null;
+
+                                const gridCols = imgArray.length === 1 ? 'grid-cols-1' : imgArray.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3';
+
+                                return (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.1, duration: 0.3 }}
+                                        className={`mt-6 grid gap-4 ${gridCols} w-full`}
+                                    >
+                                        {imgArray.map((src, idx) => (
+                                            <div key={idx} className="relative aspect-video rounded-xl overflow-hidden shadow-sm group/img">
+                                                <img
+                                                    src={src}
+                                                    alt={`${item} preview ${idx + 1}`}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-110"
+                                                />
+                                                <div className="absolute inset-0 bg-black/10 group-hover/img:bg-transparent transition-colors duration-300" />
+                                            </div>
+                                        ))}
+                                    </motion.div>
+                                );
+                            })()}
                         </div>
                     </motion.div>
                 )}
