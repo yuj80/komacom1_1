@@ -4,6 +4,7 @@ import IntroSection from '../components/IntroSection';
 import PortfolioSection from '../components/PortfolioSection';
 import ServicesSection from '../components/ServicesSection';
 import ClientsSection from '../components/ClientsSection';
+import PartnersSection from '../components/PartnersSection';
 import { motion } from 'framer-motion';
 
 const Home: React.FC = () => {
@@ -35,6 +36,9 @@ const Home: React.FC = () => {
 
             {/* SECTION 4: SERVICES */}
             <ServicesSection />
+
+            {/* SECTION 4.5: PARTNERS */}
+            <PartnersSection />
 
             {/* SECTION 5: CLIENTS */}
             <ClientsSection />

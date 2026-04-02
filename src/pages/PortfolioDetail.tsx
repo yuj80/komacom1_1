@@ -56,7 +56,21 @@ const PortfolioDetail: React.FC = () => {
                 {/* Main Media (Image) */}
                 {project.type === 'image' && project.url && (
                     <div className="w-full rounded-2xl overflow-hidden mb-12 shadow-lg border border-zinc-100">
-                        <img src={project.url} alt={project.title} className="w-full h-auto object-cover" />
+                        {project.url.includes('youtube.com/post/') ? (
+                            <div className="flex flex-col items-center justify-center p-20 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-2xl">
+                                <p className="text-zinc-500 mb-6 text-center font-medium">유튜브 커뮤니티 포스트의 이미지는 여기에서 직접 볼 수 없습니다.<br />아래 버튼을 눌러 유튜브에서 확인해 주세요.</p>
+                                <a
+                                    href={project.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-8 py-3 bg-[#FF0000] text-white rounded-full font-bold hover:bg-[#CC0000] transition-colors flex items-center gap-2"
+                                >
+                                    유튜브 포스트 확인하기
+                                </a>
+                            </div>
+                        ) : (
+                            <img src={project.url} alt={project.title} className="w-full h-auto object-cover" />
+                        )}
                     </div>
                 )}
 

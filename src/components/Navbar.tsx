@@ -15,7 +15,14 @@ const Navbar: React.FC = () => {
     }, []);
 
     const navLinks = [
-        { name: 'About', path: '/company' },
+        { 
+            name: 'About', 
+            path: '/company',
+            sub: [
+                { name: 'Partners', path: '/partners' },
+                { name: 'Clients', path: '/clients' }
+            ]
+        },
         { name: 'Services', path: '/business' },
         { name: 'Portfolio', path: '/portfolio' },
         { name: 'Contact', path: '/contact' },
@@ -30,19 +37,33 @@ const Navbar: React.FC = () => {
         >
             {/* Logo */}
             <Link to="/" className="z-50 relative flex items-center">
-                <img src="/logo-new.png" alt="KOMACOM" className="h-8 md:h-10 object-contain block" />
+                <img src="./logo-new.png" alt="KOMACOM" className="h-8 md:h-10 object-contain block" />
             </Link>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8 items-center">
                 {navLinks.map((link) => (
-                    <Link
-                        key={link.name}
-                        to={link.path}
-                        className="text-zinc-600 hover:text-black transition-colors text-sm font-medium tracking-wide uppercase"
-                    >
-                        {link.name}
-                    </Link>
+                    <div key={link.name} className="relative group">
+                        <Link
+                            to={link.path}
+                            className="text-zinc-600 hover:text-black transition-colors text-sm font-medium tracking-wide uppercase py-4"
+                        >
+                            {link.name}
+                        </Link>
+                        {link.sub && (
+                            <div className="absolute top-10 left-1/2 -translate-x-1/2 w-40 bg-white shadow-lg rounded-xl flex flex-col items-center py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top translate-y-2 group-hover:translate-y-0 border border-zinc-100">
+                                {link.sub.map((subLink) => (
+                                    <Link
+                                        key={subLink.name}
+                                        to={subLink.path}
+                                        className="w-full text-center py-2.5 text-xs text-zinc-600 hover:text-blue-600 hover:bg-zinc-50 transition-colors uppercase font-bold tracking-widest"
+                                    >
+                                        {subLink.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 ))}
                 <Link
                     to="/contact"
@@ -64,14 +85,29 @@ const Navbar: React.FC = () => {
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center space-y-8">
                     {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            to={link.path}
-                            className="text-3xl text-zinc-900 font-bold tracking-tight hover:text-blue-600 transition-colors"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            {link.name}
-                        </Link>
+                        <div key={link.name} className="flex flex-col items-center">
+                            <Link
+                                to={link.path}
+                                className="text-3xl text-zinc-900 font-bold tracking-tight hover:text-blue-600 transition-colors mb-2"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                {link.name}
+                            </Link>
+                            {link.sub && (
+                                <div className="flex flex-col items-center space-y-4 my-2">
+                                    {link.sub.map((subLink) => (
+                                        <Link
+                                            key={subLink.name}
+                                            to={subLink.path}
+                                            className="text-xl text-zinc-500 font-semibold hover:text-blue-600 transition-colors"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            - {subLink.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     ))}
                     <Link
                         to="/contact"

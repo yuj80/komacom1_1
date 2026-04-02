@@ -9,9 +9,10 @@ const Login: React.FC = () => {
     const { login } = useAdmin();
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (login(id, pass)) {
+        const success = await login(id, pass);
+        if (success) {
             navigate('/admin/dashboard');
         } else {
             setError('아이디 또는 비밀번호가 올바르지 않습니다.');

@@ -10,10 +10,14 @@
 
 @layer utilities {
   .animate-marquee {
-    animation: marquee 25s linear infinite;
+    animation: marquee 120s linear infinite;
   }
 
-  .animate-marquee:hover {
+  .animate-marquee-client {
+    animation: marquee 120s linear infinite;
+  }
+
+  .animate-marquee:hover, .animate-marquee-client:hover {
     animation-play-state: paused;
   }
 }

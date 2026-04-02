@@ -2,22 +2,26 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import Layout from './layout/Layout';
 
-import Home from './pages/Home';
-import Company from './pages/Company';
-import Business from './pages/Business';
-import Portfolio from './pages/Portfolio';
-import PortfolioDetail from './pages/PortfolioDetail';
-import Contact from './pages/Contact';
+import React, { Suspense } from 'react';
+
+const Home = React.lazy(() => import('./pages/Home'));
+const Company = React.lazy(() => import('./pages/Company'));
+const Business = React.lazy(() => import('./pages/Business'));
+const Portfolio = React.lazy(() => import('./pages/Portfolio'));
+const PortfolioDetail = React.lazy(() => import('./pages/PortfolioDetail'));
+const Contact = React.lazy(() => import('./pages/Contact'));
+const Partners = React.lazy(() => import('./pages/Partners'));
+const Clients = React.lazy(() => import('./pages/Clients'));
 
 // Admin Import
-import Login from './pages/admin/Login';
-import Dashboard from './pages/admin/Dashboard';
+const Login = React.lazy(() => import('./pages/admin/Login'));
+const Dashboard = React.lazy(() => import('./pages/admin/Dashboard'));
 import { AdminProvider } from './context/AdminContext';
 
 // Logic to conditionally render Layout (Navbar/Footer)
 const AppContent = () => {
   return (
-    <>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white text-zinc-400">Loading...</div>}>
       <Routes>
         {/* Admin Routes (No Standard Layout) */}
         <Route path="/admin/login" element={<Login />} />
@@ -33,11 +37,13 @@ const AppContent = () => {
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/portfolio/:id" element={<PortfolioDetail />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/partners" element={<Partners />} />
+              <Route path="/clients" element={<Clients />} />
             </Routes>
           </Layout>
         } />
       </Routes>
-    </>
+    </Suspense>
   );
 };
 

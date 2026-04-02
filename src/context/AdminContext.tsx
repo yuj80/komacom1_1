@@ -1,16 +1,17 @@
 import React, { createContext, useState, useContext, useEffect, type ReactNode } from 'react';
+import { supabase } from '../lib/supabase';
 
 // --- Types ---
 export interface PortfolioItem {
     id: number;
     title: string;
-    category: 'TV' | 'Radio' | 'PPL' | 'Digital';
+    category: 'TV' | 'Radio' | 'PPL' | 'ETC';
     type: 'image' | 'video';
-    url: string; // Image URL or Youtube/Video URL
-    thumbnail?: string; // For video thumbnails
-    detailImages?: string[]; // Multiple additional images
-    content?: string; // Additional text content if needed
-    color: string; // Gradient class
+    url: string;
+    thumbnail?: string;
+    detailImages?: string[];
+    content?: string;
+    color: string;
 }
 
 export interface ServiceItem {
@@ -33,6 +34,12 @@ export interface ClientItem {
     logoUrl: string;
 }
 
+export interface PartnerItem {
+    id: number;
+    name: string;
+    logoUrl: string;
+}
+
 export interface AboutData {
     slogan: string;
     description: string;
@@ -45,291 +52,325 @@ export interface ContactData {
     email: string;
     phone: string;
     fax: string;
+    ceoName: string;
 }
 
 interface AdminContextType {
     isAuthenticated: boolean;
-    login: (id: string, pass: string) => boolean;
-    logout: () => void;
-    updateCredentials: (newId: string, newPass: string) => void;
+    login: (id: string, pass: string) => Promise<boolean>;
+    logout: () => Promise<void>;
+    updateCredentials: (newId: string, newPass: string) => Promise<void>;
 
-    // Portfolio
     portfolio: PortfolioItem[];
-    addPortfolio: (item: Omit<PortfolioItem, 'id'>) => void;
-    updatePortfolio: (item: PortfolioItem) => void;
-    deletePortfolio: (id: number) => void;
+    addPortfolio: (item: Omit<PortfolioItem, 'id'>) => Promise<void>;
+    updatePortfolio: (item: PortfolioItem) => Promise<void>;
+    deletePortfolio: (id: number) => Promise<void>;
+    reorderPortfolio: (reorderedItems: PortfolioItem[]) => Promise<void>;
 
-    // Services
     services: ServiceItem[];
-    updateService: (item: ServiceItem) => void;
+    updateService: (item: ServiceItem) => Promise<void>;
 
-    // About
     about: AboutData;
-    updateAbout: (data: AboutData) => void;
-    addHistory: (item: Omit<HistoryItem, 'id'>) => void;
-    updateHistory: (item: HistoryItem) => void;
-    deleteHistory: (id: number) => void;
+    updateAbout: (data: AboutData) => Promise<void>;
+    addHistory: (item: Omit<HistoryItem, 'id'>) => Promise<void>;
+    updateHistory: (item: HistoryItem) => Promise<void>;
+    deleteHistory: (id: number) => Promise<void>;
 
-    // Contact
     contact: ContactData;
-    updateContact: (data: ContactData) => void;
+    updateContact: (data: ContactData) => Promise<void>;
 
-    // Clients
     clients: ClientItem[];
-    addClient: (item: Omit<ClientItem, 'id'>) => void;
-    updateClient: (item: ClientItem) => void;
-    deleteClient: (id: number) => void;
+    addClient: (item: Omit<ClientItem, 'id'>) => Promise<void>;
+    updateClient: (item: ClientItem) => Promise<void>;
+    deleteClient: (id: number) => Promise<void>;
+
+    partners: PartnerItem[];
+    addPartner: (item: Omit<PartnerItem, 'id'>) => Promise<void>;
+    updatePartner: (item: PartnerItem) => Promise<void>;
+    deletePartner: (id: number) => Promise<void>;
 }
 
-// --- Initial Data ---
-const INITIAL_PORTFOLIO: PortfolioItem[] = [
-    { id: 1, title: '피자에땅', category: 'TV', type: 'video', url: 'https://youtu.be/L83BtbIapw4?si=1fD71W-u2sH7c0pS', color: 'from-blue-500 to-indigo-600', detailImages: [] },
-    { id: 2, title: '모닝 쇼', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1000&auto=format&fit=crop', color: 'from-cyan-400 to-blue-500', detailImages: [] },
-    { id: 3, title: '드라마 제작지원', category: 'PPL', type: 'image', url: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500', detailImages: [] },
-    { id: 4, title: '테크 제품 런칭', category: 'TV', type: 'image', url: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=1000&auto=format&fit=crop', color: 'from-orange-400 to-red-500', detailImages: [] },
-    { id: 5, title: '오디오북', category: 'Radio', type: 'image', url: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=1000&auto=format&fit=crop', color: 'from-purple-500 to-pink-500', detailImages: [] },
-    { id: 6, title: '웹 드라마', category: 'Digital', type: 'image', url: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1000&auto=format&fit=crop', color: 'from-pink-500 to-rose-500', detailImages: [] },
-];
+// Initial defaults if DB empty
+const DEFAULT_ABOUT: AboutData = { slogan: '', description: '', history: [] };
+const DEFAULT_CONTACT: ContactData = { introText: '', address: '', email: '', phone: '', fax: '', ceoName: '박용근' };
 
-const INITIAL_CLIENTS: ClientItem[] = [
-    { id: 1, name: 'Client 1 (TV CF)', logoUrl: '/tvcf.jpg' },
-    { id: 2, name: 'Client 2 (Radio CM)', logoUrl: '/radio_cm.jpg' },
-    { id: 3, name: 'Client 3 (PPL)', logoUrl: '/ppl.jpg' },
-    { id: 4, name: 'Client 4 (YouTube)', logoUrl: '/youtube.jpg' },
-    { id: 5, name: 'Client 5 (Radio)', logoUrl: '/radio.jpg' },
-    { id: 6, name: 'Client 6 (Logo)', logoUrl: '/logo.jpg' },
-];
+// Postgres lowercase to JS camelCase Mappers
+const mapPortfolio = (p: any): PortfolioItem => ({
+    id: p.id,
+    title: p.title,
+    category: p.category,
+    type: p.type,
+    url: p.url,
+    thumbnail: p.thumbnail,
+    detailImages: p.detailimages || p.detailImages || [],
+    content: p.content,
+    color: p.color
+});
 
-const INITIAL_SERVICES: ServiceItem[] = [
-    { id: 1, title: '방송 광고 (Broadcast Media)', description: 'TV 광고를 위한 종합적인 기획 및 실행. 스토리보드부터 최종 송출까지 책임집니다.', subItems: ['TV CF', 'TV협찬광고', 'RADIO협찬광고'] },
-    { id: 2, title: '라디오 마케팅 (Radio Marketing)', description: '청취자의 귀를 사로잡는 매력적인 오디오 콘텐츠. 성우 캐스팅, 녹음, 매체 구매까지.', subItems: ['라디오CM', '인터넷라디오'] },
-    { id: 3, title: '스폰서십 & PPL', description: '드라마 및 예능 프로그램 내 전략적 제품 노출로 자연스러운 브랜드 인지도 상승 효과.', subItems: ['드라마&예능 PPL', '가상광고'] },
-    { id: 4, title: '디지털 & 인터랙티브', description: 'SNS, 유튜브, 인터랙티브 웹 경험을 포함한 풀퍼널 디지털 마케팅 전략.', subItems: ['유튜브 콘텐츠', '소셜 미디어 운영'] },
-];
+const mapService = (s: any): ServiceItem => ({
+    id: s.id,
+    title: s.title,
+    description: s.description,
+    subItems: s.subitems || s.subItems || []
+});
 
-const INITIAL_ABOUT: AboutData = {
-    slogan: '우리는 예술과\\n기술의 간극을 잇습니다.',
-    description: '우리는 아이디어의 힘으로 비즈니스를 변화시킬 수 있다고 믿는 크리에이티브 에이전시입니다.',
-    history: [
-        { id: 1, year: '2026', title: '글로벌 확장', desc: '아시아 주요 거점 지사 설립' },
-        { id: 2, year: '2024', title: '최우수 에이전시 수상', desc: '베스트 디지털 에이전시 어워드 수상' },
-        { id: 3, year: '2020', title: '디지털 트랜스포메이션', desc: '종합 디지털 솔루션으로 사업 영역 확장' },
-        { id: 4, year: '2014', title: '설립', desc: '코마커뮤니케이션(KOMACOM) 설립' },
-    ]
-};
+const mapClient = (c: any): ClientItem => ({
+    id: c.id,
+    name: c.name,
+    logoUrl: c.logourl || c.logoUrl || ''
+});
 
-const INITIAL_CONTACT: ContactData = {
-    introText: '프로젝트를 시작할 준비가 되셨나요? 언제든 문의해주세요.',
-    address: '서울시 영등포구 국회대로 70길 7 동아빌딩 3층',
-    email: 'koma@komacom.co.kr',
-    phone: '02-785-5563',
-    fax: '02-785-2287'
-};
+const mapPartner = (p: any): PartnerItem => ({
+    id: p.id,
+    name: p.name,
+    logoUrl: p.logourl || p.logoUrl || ''
+});
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    // Data State - Lazy Initialization to prevent overwriting storage with defaults on mount
-    const [portfolio, setPortfolio] = useState<PortfolioItem[]>(() => {
-        const stored = localStorage.getItem('portfolioData');
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    
+    const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+    const [services, setServices] = useState<ServiceItem[]>([]);
+    const [about, setAbout] = useState<AboutData>(DEFAULT_ABOUT);
+    const [contact, setContact] = useState<ContactData>(DEFAULT_CONTACT);
+    const [clients, setClients] = useState<ClientItem[]>([]);
+    const [partners, setPartners] = useState<PartnerItem[]>([]);
 
-        // Force update initial Pizza item to yt url if old version is cached
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                const pizzaItem = parsed.find((p: any) => p.id === 1);
-                if (pizzaItem && pizzaItem.url === 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1000&auto=format&fit=crop') {
-                    return INITIAL_PORTFOLIO;
-                }
-                return parsed;
-            } catch (e) {
-                return INITIAL_PORTFOLIO;
-            }
-        }
-        return INITIAL_PORTFOLIO;
-    });
-    const [services, setServices] = useState<ServiceItem[]>(() => {
-        const stored = localStorage.getItem('servicesData');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                // Force update if old subitem structures are found (cache invalidate)
-                if (parsed[0] && parsed[0].subItems && parsed[0].subItems.includes('케이블 TV 광고')) {
-                    return INITIAL_SERVICES;
-                }
-                return parsed;
-            } catch (e) {
-                return INITIAL_SERVICES;
-            }
-        }
-        return INITIAL_SERVICES;
-    });
-    const [about, setAbout] = useState<AboutData>(() => {
-        const stored = localStorage.getItem('aboutData');
-        return stored ? JSON.parse(stored) : INITIAL_ABOUT;
-    });
-    const [contact, setContact] = useState<ContactData>(() => {
-        const stored = localStorage.getItem('contactData');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                // Force inject fax if old cache is missing it
-                if (!parsed.fax) {
-                    return { ...parsed, fax: INITIAL_CONTACT.fax };
-                }
-                return parsed;
-            } catch (e) {
-                return INITIAL_CONTACT;
-            }
-        }
-        return INITIAL_CONTACT;
-    });
-    const [clients, setClients] = useState<ClientItem[]>(() => {
-        const stored = localStorage.getItem('clientsData');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                // Force update if old placeholder is found on the first client (cache invalidate)
-                const firstClient = parsed.find((p: any) => p.id === 1);
-                if (firstClient && firstClient.logoUrl && (firstClient.logoUrl.includes('via.placeholder.com') || firstClient.logoUrl.includes('placeholder'))) {
-                    return INITIAL_CLIENTS;
-                }
-                return parsed;
-            } catch (e) {
-                return INITIAL_CLIENTS;
-            }
-        }
-        return INITIAL_CLIENTS;
-    });
-
-    // Auth State - Lazy Init
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-        return localStorage.getItem('isAdmin') === 'true';
-    });
-    const [adminId, setAdminId] = useState<string>(() => localStorage.getItem('adminId') || 'admin');
-    const [adminPass, setAdminPass] = useState<string>(() => localStorage.getItem('adminPass') || '0000');
-
-    // Sync to LocalStorage (Run whenever state changes)
-    useEffect(() => localStorage.setItem('portfolioData', JSON.stringify(portfolio)), [portfolio]);
-    useEffect(() => localStorage.setItem('servicesData', JSON.stringify(services)), [services]);
-    useEffect(() => localStorage.setItem('aboutData', JSON.stringify(about)), [about]);
-    useEffect(() => localStorage.setItem('contactData', JSON.stringify(contact)), [contact]);
-    useEffect(() => localStorage.setItem('clientsData', JSON.stringify(clients)), [clients]);
-
-    // Listen for changes from other tabs (Cross-tab sync)
     useEffect(() => {
-        const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === 'portfolioData' && e.newValue) setPortfolio(JSON.parse(e.newValue));
-            if (e.key === 'servicesData' && e.newValue) setServices(JSON.parse(e.newValue));
-            if (e.key === 'aboutData' && e.newValue) setAbout(JSON.parse(e.newValue));
-            if (e.key === 'contactData' && e.newValue) setContact(JSON.parse(e.newValue));
-            if (e.key === 'clientsData' && e.newValue) setClients(JSON.parse(e.newValue));
-            // Auth sync
-            if (e.key === 'isAdmin') setIsAuthenticated(e.newValue === 'true');
-        };
+        // Init auth
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setIsAuthenticated(!!session);
+        });
 
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setIsAuthenticated(!!session);
+        });
+
+        loadAllData();
+        
+        return () => subscription.unsubscribe();
     }, []);
 
-    // Listen for changes from other tabs
-    // Auth Functions
-    const login = (id: string, pass: string) => {
-        if (id === adminId && pass === adminPass) {
-            setIsAuthenticated(true);
-            localStorage.setItem('isAdmin', 'true');
+    const loadAllData = async () => {
+        try {
+            const [pRes, sRes, hRes, cRes, partRes, setRes] = await Promise.all([
+                supabase.from('portfolio').select('*').order('created_at', { ascending: false }),
+                supabase.from('services').select('*').order('id', { ascending: true }),
+                supabase.from('history').select('*').order('year', { ascending: false }),
+                supabase.from('clients').select('*').order('created_at', { ascending: false }),
+                supabase.from('partners').select('*').order('created_at', { ascending: false }),
+                supabase.from('settings').select('*').limit(1).single()
+            ]);
+
+            if (pRes.data) setPortfolio(pRes.data.map(mapPortfolio));
+            if (sRes.data) setServices(sRes.data.map(mapService));
+            if (cRes.data) setClients(cRes.data.map(mapClient));
+            if (partRes.data) setPartners(partRes.data.map(mapPartner));
+            
+            if (setRes.data) {
+                const historyData = (hRes.data || []).map((h: any) => ({
+                    id: h.id, year: h.year, title: h.title, desc: h.desc_text
+                }));
+                // Combine into About
+                setAbout({
+                    slogan: setRes.data.slogan || '',
+                    description: setRes.data.about_description || '',
+                    history: historyData
+                });
+                
+                // Combine into Contact
+                setContact({
+                    introText: setRes.data.contact_intro || '',
+                    address: setRes.data.contact_address || '',
+                    email: setRes.data.contact_email || '',
+                    phone: setRes.data.contact_phone || '',
+                    fax: setRes.data.contact_fax || '',
+                    ceoName: setRes.data.contact_ceo || '박용근'
+                });
+            }
+        } catch (error) {
+            console.error('Error loading Supabase data:', error);
+        }
+    };
+
+    const login = async (id: string, pass: string) => {
+        const emailToLogin = id.includes('@') ? id : `${id}@komacom.co.kr`;
+        const { data, error } = await supabase.auth.signInWithPassword({ email: emailToLogin, password: pass });
+        if (error) console.error('Login error:', error.message);
+        if (data.session) {
             return true;
         }
         return false;
     };
 
-    const logout = () => {
-        setIsAuthenticated(false);
-        localStorage.removeItem('isAdmin');
+    const logout = async () => {
+        await supabase.auth.signOut();
     };
 
-    const updateCredentials = (newId: string, newPass: string) => {
-        setAdminId(newId);
-        setAdminPass(newPass);
-        localStorage.setItem('adminId', newId);
-        localStorage.setItem('adminPass', newPass);
-        alert('계정 정보가 변경되었습니다. 다시 로그인해주세요.');
-        logout();
+    const updateCredentials = async (newId: string, newPass: string) => {
+        const emailToUpdate = newId.includes('@') ? newId : `${newId}@komacom.co.kr`;
+        await supabase.auth.updateUser({ email: emailToUpdate, password: newPass });
+        alert('계정 정보가 변경되었습니다. 사이트를 새로고침 한 뒤 새 정보로 다시 로그인해주세요.');
+        await logout();
     };
 
-    // Portfolio Functions
-    const addPortfolio = (item: Omit<PortfolioItem, 'id'>) => {
-        const newItem = { ...item, id: Date.now() };
-        setPortfolio(prev => [newItem, ...prev]);
+    const addPortfolio = async (item: Omit<PortfolioItem, 'id'>) => {
+        const payload: any = { ...item, detailimages: item.detailImages };
+        delete payload.detailImages;
+        const { data } = await supabase.from('portfolio').insert([payload]).select().single();
+        if (data) setPortfolio(prev => [mapPortfolio(data), ...prev]);
+    };
+    
+    const updatePortfolio = async (item: PortfolioItem) => {
+        const { id, created_at, ...rest } = item as any;
+        const payload: any = { ...rest, detailimages: rest.detailImages };
+        delete payload.detailImages;
+        
+        const { data, error } = await supabase.from('portfolio').update(payload).eq('id', item.id).select().single();
+        if (error) {
+            console.error('Supabase Update Error:', error);
+            alert(`업데이트 실패: ${error.message}`);
+        }
+        if (data) setPortfolio(prev => prev.map(p => p.id === data.id ? mapPortfolio(data) : p));
+    };
+    
+    const deletePortfolio = async (id: number) => {
+        await supabase.from('portfolio').delete().eq('id', id);
+        setPortfolio(prev => prev.filter(p => p.id !== id));
     };
 
-    const updatePortfolio = (updatedItem: PortfolioItem) => {
-        setPortfolio(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+    const reorderPortfolio = async (reorderedItems: PortfolioItem[]) => {
+        // Optimistic UI update
+        setPortfolio(reorderedItems);
+
+        // Calculate new timestamps to persist order (sort by created_at DESC)
+        // We use the current timestamp as a base and subtract minutes for each item to maintain order.
+        const baseTime = Date.now();
+        
+        const upsertPayload = reorderedItems.map((item, index) => {
+            const payload: any = { ...item, detailimages: item.detailImages };
+            delete payload.detailImages;
+            // Ensure strict descending order by subtracting time per index
+            payload.created_at = new Date(baseTime - (index * 60000)).toISOString();
+            return payload;
+        });
+
+        const { error } = await supabase.from('portfolio').upsert(upsertPayload);
+        if (error) {
+            console.error('Reorder error:', error.message);
+            alert(`순서 변경 실패: ${error.message}`);
+            // Fallback to reload
+            loadAllData();
+        }
     };
 
-    const deletePortfolio = (id: number) => {
-        setPortfolio(prev => prev.filter(item => item.id !== id));
+    const updateService = async (item: ServiceItem) => {
+        const { id, created_at, ...rest } = item as any;
+        const payload: any = { ...rest, subitems: rest.subItems };
+        delete payload.subItems;
+
+        const { data } = await supabase.from('services').update(payload).eq('id', item.id).select().single();
+        if (data) setServices(prev => prev.map(s => s.id === data.id ? mapService(data) : s));
     };
 
-    // Service Functions
-    const updateService = (updatedItem: ServiceItem) => {
-        setServices(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+    const updateAbout = async (data: AboutData) => {
+        await supabase.from('settings').update({
+            slogan: data.slogan,
+            about_description: data.description
+        }).eq('id', 1);
+        setAbout(prev => ({ ...prev, slogan: data.slogan, description: data.description }));
     };
 
-    // About Functions
-    const updateAbout = (data: AboutData) => {
-        setAbout(data);
+    const addHistory = async (item: Omit<HistoryItem, 'id'>) => {
+        const mappedItem = { year: item.year, title: item.title, desc_text: item.desc };
+        const { data } = await supabase.from('history').insert([mappedItem]).select().single();
+        if (data) {
+            const added = { id: data.id, year: data.year, title: data.title, desc: data.desc_text };
+            setAbout(prev => ({ ...prev, history: [added, ...prev.history].sort((a, b) => parseInt(b.year) - parseInt(a.year)) }));
+        }
+    };
+    
+    const updateHistory = async (item: HistoryItem) => {
+        const mappedItem = { year: item.year, title: item.title, desc_text: item.desc };
+        const { data } = await supabase.from('history').update(mappedItem).eq('id', item.id).select().single();
+        if (data) {
+            const updated = { id: data.id, year: data.year, title: data.title, desc: data.desc_text };
+            setAbout(prev => ({ ...prev, history: prev.history.map(h => h.id === data.id ? updated : h).sort((a, b) => parseInt(b.year) - parseInt(a.year)) }));
+        }
+    };
+    
+    const deleteHistory = async (id: number) => {
+        await supabase.from('history').delete().eq('id', id);
+        setAbout(prev => ({ ...prev, history: prev.history.filter(h => h.id !== id) }));
     };
 
-    const addHistory = (item: Omit<HistoryItem, 'id'>) => {
-        const newItem = { ...item, id: Date.now() };
-        setAbout(prev => ({
-            ...prev,
-            history: [newItem, ...prev.history].sort((a, b) => parseInt(b.year) - parseInt(a.year)) // Sort by year descending
-        }));
-    };
-
-    const updateHistory = (updatedItem: HistoryItem) => {
-        setAbout(prev => ({
-            ...prev,
-            history: prev.history.map(item => item.id === updatedItem.id ? updatedItem : item).sort((a, b) => parseInt(b.year) - parseInt(a.year))
-        }));
-    };
-
-    const deleteHistory = (id: number) => {
-        setAbout(prev => ({
-            ...prev,
-            history: prev.history.filter(item => item.id !== id)
-        }));
-    };
-
-    // Contact Functions
-    const updateContact = (data: ContactData) => {
+    const updateContact = async (data: ContactData) => {
+        await supabase.from('settings').update({
+            contact_intro: data.introText,
+            contact_address: data.address,
+            contact_email: data.email,
+            contact_phone: data.phone,
+            contact_fax: data.fax,
+            contact_ceo: data.ceoName
+        }).eq('id', 1);
         setContact(data);
     };
 
-    // Client CI Functions
-    const addClient = (item: Omit<ClientItem, 'id'>) => {
-        const newItem = { ...item, id: Date.now() };
-        setClients(prev => [newItem, ...prev]);
+    const addClient = async (item: Omit<ClientItem, 'id'>) => {
+        const payload: any = { ...item, logourl: item.logoUrl };
+        delete payload.logoUrl;
+        
+        const { data } = await supabase.from('clients').insert([payload]).select().single();
+        if (data) setClients(prev => [mapClient(data), ...prev]);
+    };
+    
+    const updateClient = async (item: ClientItem) => {
+         const { id, created_at, ...rest } = item as any;
+         const payload: any = { ...rest, logourl: rest.logoUrl };
+         delete payload.logoUrl;
+         
+        const { data } = await supabase.from('clients').update(payload).eq('id', item.id).select().single();
+        if (data) setClients(prev => prev.map(c => c.id === data.id ? mapClient(data) : c));
+    };
+    
+    const deleteClient = async (id: number) => {
+        await supabase.from('clients').delete().eq('id', id);
+        setClients(prev => prev.filter(c => c.id !== id));
     };
 
-    const updateClient = (updatedItem: ClientItem) => {
-        setClients(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+    const addPartner = async (item: Omit<PartnerItem, 'id'>) => {
+        const payload: any = { ...item, logourl: item.logoUrl };
+        delete payload.logoUrl;
+        
+        const { data } = await supabase.from('partners').insert([payload]).select().single();
+        if (data) setPartners(prev => [mapPartner(data), ...prev]);
     };
-
-    const deleteClient = (id: number) => {
-        setClients(prev => prev.filter(item => item.id !== id));
+    
+    const updatePartner = async (item: PartnerItem) => {
+         const { id, created_at, ...rest } = item as any;
+         const payload: any = { ...rest, logourl: rest.logoUrl };
+         delete payload.logoUrl;
+         
+        const { data } = await supabase.from('partners').update(payload).eq('id', item.id).select().single();
+        if (data) setPartners(prev => prev.map(p => p.id === data.id ? mapPartner(data) : p));
+    };
+    
+    const deletePartner = async (id: number) => {
+        await supabase.from('partners').delete().eq('id', id);
+        setPartners(prev => prev.filter(p => p.id !== id));
     };
 
     return (
         <AdminContext.Provider value={{
             isAuthenticated, login, logout, updateCredentials,
-            portfolio, addPortfolio, updatePortfolio, deletePortfolio,
+            portfolio, addPortfolio, updatePortfolio, deletePortfolio, reorderPortfolio,
             services, updateService,
             about, updateAbout, addHistory, deleteHistory, updateHistory,
             contact, updateContact,
-            clients, addClient, updateClient, deleteClient
+            clients, addClient, updateClient, deleteClient,
+            partners, addPartner, updatePartner, deletePartner
         }}>
             {children}
         </AdminContext.Provider>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Printer } from 'lucide-react';
+import { Mail, Phone, MapPin, Printer, User } from 'lucide-react';
 
 import { useAdmin } from '../context/AdminContext';
 
@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
                 {/* Left: Branding & CTA */}
                 <div>
                     <div className="mb-8">
-                        <img src="/logo-new.png" alt="KOMACOM" className="h-10 md:h-12 object-contain" />
+                        <img src="./logo-new.png" alt="KOMACOM" className="h-10 md:h-12 object-contain" />
                     </div>
 
                     <h2 className="text-3xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-900 break-keep">
@@ -35,6 +35,12 @@ const Footer: React.FC = () => {
                         <MapPin className="mt-1 flex-shrink-0 text-rose-500" size={20} />
                         <p>{contact.address}</p>
                     </div>
+                    {contact.ceoName && (
+                        <div className="flex items-center space-x-4">
+                            <User size={20} className="text-rose-500" />
+                            <p>대표자 : {contact.ceoName}</p>
+                        </div>
+                    )}
                     <div className="flex items-center space-x-4">
                         <Mail size={20} className="text-rose-500" />
                         <p>{contact.email}</p>

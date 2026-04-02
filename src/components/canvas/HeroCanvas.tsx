@@ -34,8 +34,7 @@ const FluidMesh = () => {
 };
 
 const HeroText = () => {
-    // Use local font for reliability and to avoid CORS issues
-    const fontUrl = '/fonts/Pretendard-Black.otf';
+    const fontUrl = './fonts/Pretendard-Black.otf';
 
     return (
         <group position={[0, 0, 3]}>

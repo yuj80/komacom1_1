@@ -8,19 +8,23 @@ const getCoverImage = (project: PortfolioItem) => {
     if (project.thumbnail) return project.thumbnail;
     if (!project.url) return '';
 
-    // YouTube ID extraction regex (handles youtu.be, youtube.com/watch, embed, etc.)
+    // YouTube Video ID extraction
     const ytMatch = project.url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-
     if (ytMatch && ytMatch[1]) {
         return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
     }
 
-    // If it's not a youtube url, assume it's a direct image URL
+    // YouTube Community Post handling
+    if (project.url.includes('youtube.com/post/')) {
+        return 'https://www.gstatic.com/youtube/img/promos/growth/community_post_placeholder_dark.png';
+    }
+
     return project.url;
 };
+
 import { PlayCircle } from 'lucide-react';
 
-const categories = ['전체', 'TV', 'Radio', 'PPL', 'Digital'];
+const categories = ['전체', 'TV', 'Radio', 'PPL', 'ETC'];
 
 const Portfolio: React.FC = () => {
     const { portfolio } = useAdmin();
@@ -92,6 +96,9 @@ const Portfolio: React.FC = () => {
                                         onError={(e) => {
                                             if (e.currentTarget.src.includes('maxresdefault.jpg')) {
                                                 e.currentTarget.src = e.currentTarget.src.replace('maxresdefault.jpg', 'hqdefault.jpg');
+                                            } else if (e.currentTarget.src.includes('community_post_placeholder')) {
+                                                 // If even the placeholder fails, just hide it
+                                                 e.currentTarget.style.display = 'none';
                                             }
                                         }}
                                     />

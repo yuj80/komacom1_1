@@ -57,33 +57,33 @@ const SubServiceItem = ({ item }: { item: string }) => {
                                     const text = itemName.toLowerCase().replace(/\s+/g, '');
 
                                     if (text.includes('인터넷') || text.includes('internet')) {
-                                        return ['/internetradio.jpg'];
+                                        return ['./internetradio.jpg'];
                                     }
 
                                     if (text.includes('가상광고')) {
-                                        return ['/virtual_ad.jpg'];
+                                        return ['./virtual_ad.jpg'];
                                     }
 
                                     if (text.includes('tv협찬') || text.includes('티비협찬')) {
-                                        return ['/tvppl.jpg'];
+                                        return ['./tvppl.jpg'];
                                     }
 
                                     if (text.includes('radio협찬') || text.includes('라디오협찬')) {
-                                        return ['/radioppl.jpg'];
+                                        return ['./radioppl.jpg'];
                                     }
 
                                     if (text.includes('라디오')) {
-                                        return ['/radio_cm.jpg', '/radio.jpg'];
+                                        return ['./radio_cm.jpg', './radio.jpg'];
                                     }
 
                                     if (text.includes('소셜') || text.includes('media') || text.includes('sns') || text.includes('미디어')) {
-                                        return ['/social.jpg'];
+                                        return ['./social.jpg'];
                                     }
 
-                                    if (text.includes('오디오')) return ['/radio.jpg'];
-                                    if (text.includes('tv') || text.includes('cf') || text.includes('티비')) return ['/tvcf.jpg'];
-                                    if (text.includes('ppl') || text.includes('협찬') || text.includes('드라마') || text.includes('예능')) return ['/ppl.jpg'];
-                                    if (text.includes('유튜브') || text.includes('youtube') || text.includes('콘텐츠')) return ['/youtube.jpg'];
+                                    if (text.includes('오디오')) return ['./radio.jpg'];
+                                    if (text.includes('tv') || text.includes('cf') || text.includes('티비')) return ['./tvcf.jpg'];
+                                    if (text.includes('ppl') || text.includes('협찬') || text.includes('드라마') || text.includes('예능')) return ['./ppl.jpg'];
+                                    if (text.includes('유튜브') || text.includes('youtube') || text.includes('콘텐츠')) return ['./youtube.jpg'];
 
                                     return [];
                                 };

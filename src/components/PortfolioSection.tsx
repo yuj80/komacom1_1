@@ -29,11 +29,17 @@ const PortfolioSection = () => {
 
     const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
 
+    // Filter portfolio to get exactly one item from each required category
+    const categoriesToShow = ['TV', 'Radio', 'PPL', 'ETC'];
+    const displayPortfolio = categoriesToShow
+        .map(cat => portfolio.find(p => p.category === cat || (cat === 'ETC' && (p.category as string) === 'Digital')))
+        .filter(Boolean) as PortfolioItem[];
+
     return (
         <section ref={targetRef} className="relative h-[300vh] bg-transparent text-zinc-900">
             <div className="sticky top-0 flex h-[100dvh] items-center overflow-hidden">
                 <motion.div style={{ x }} className="flex gap-10 pl-20 pr-20">
-                    {portfolio.map((project) => (
+                    {displayPortfolio.map((project) => (
                         <div
                             key={project.id}
                             className={`group relative h-[400px] w-[85vw] md:h-[600px] md:w-[800px] flex-shrink-0 overflow-hidden rounded-3xl bg-zinc-900 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[0.98]`}
@@ -41,7 +47,7 @@ const PortfolioSection = () => {
                             {/* Background Image */}
                             {getCoverImage(project) ? (
                                 <img
-                                    src={getCoverImage(project)}
+                                    src={getCoverImage(project)?.startsWith('/') ? '.' + getCoverImage(project) : getCoverImage(project)}
                                     alt={project.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     onError={(e) => {

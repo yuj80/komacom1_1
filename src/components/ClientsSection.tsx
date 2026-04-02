@@ -23,7 +23,7 @@ const ClientsSection: React.FC = () => {
                   It houses the duplicated items so they flow exactly off-screen.
                   The animation moves it -50%.
                 */}
-                <div className="flex animate-marquee min-w-max gap-12 items-center px-6">
+                <div className="flex animate-marquee-client min-w-max gap-12 items-center px-6">
                     {duplicatedClients.map((client, index) => (
                         <div key={`${client.id}-${index}`} className="flex-shrink-0 w-32 md:w-48 h-16 md:h-24 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 flex items-center justify-center">
                             <img

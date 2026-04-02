@@ -1,27 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { useAdmin, type PortfolioItem, type HistoryItem, type ContactData, type ClientItem } from '../../context/AdminContext';
+import { useAdmin, type PortfolioItem, type HistoryItem, type ContactData, type ClientItem, type PartnerItem } from '../../context/AdminContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogOut, Plus, Trash2, PlayCircle, Image as ImageIcon, Save, Building2, Phone as PhoneIcon, LayoutGrid, Layers, Settings, Edit2, X, ExternalLink } from 'lucide-react';
+import { LogOut, Plus, Trash2, Save, Building2, Phone as PhoneIcon, LayoutGrid, Layers, Settings, Edit2, X, ExternalLink, Users, Image as ImageIcon } from 'lucide-react';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy } from '@dnd-kit/sortable';
+import { SortablePortfolioItem } from './SortablePortfolioItem';
+import { ImageUploadButton } from '../../components/ImageUploadButton';
 
 const Dashboard: React.FC = () => {
     const {
         isAuthenticated, logout,
-        portfolio, addPortfolio, deletePortfolio, updatePortfolio,
+        portfolio, addPortfolio, deletePortfolio, updatePortfolio, reorderPortfolio,
         services, updateService,
         about, updateAbout, addHistory, deleteHistory, updateHistory,
         contact, updateContact,
         clients, addClient, updateClient, deleteClient,
+        partners, addPartner, updatePartner, deletePartner,
         updateCredentials
     } = useAdmin();
 
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<'portfolio' | 'services' | 'about' | 'contact' | 'clients' | 'settings'>('portfolio');
+    const [activeTab, setActiveTab] = useState<'portfolio' | 'services' | 'about' | 'contact' | 'clients' | 'partners' | 'settings'>('portfolio');
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        
+        if (over && active.id !== over.id) {
+            const oldIndex = portfolio.findIndex((item) => item.id === active.id);
+            const newIndex = portfolio.findIndex((item) => item.id === over.id);
+            
+            const reordered = arrayMove(portfolio, oldIndex, newIndex);
+            reorderPortfolio(reordered);
+        }
+    };
 
     // New Item States
     const [isAddingPortfolio, setIsAddingPortfolio] = useState(false);
     const [editingPortfolioId, setEditingPortfolioId] = useState<number | null>(null);
     const [newPortfolio, setNewPortfolio] = useState<Partial<PortfolioItem>>({
-        title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: ''
+        title: '', category: 'TV', type: 'image', url: '', thumbnail: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: ''
     });
 
     const [isAddingHistory, setIsAddingHistory] = useState(false);
@@ -33,6 +62,12 @@ const Dashboard: React.FC = () => {
     const [isAddingClient, setIsAddingClient] = useState(false);
     const [editingClientId, setEditingClientId] = useState<number | null>(null);
     const [newClient, setNewClient] = useState<Partial<ClientItem>>({
+        name: '', logoUrl: ''
+    });
+
+    const [isAddingPartner, setIsAddingPartner] = useState(false);
+    const [editingPartnerId, setEditingPartnerId] = useState<number | null>(null);
+    const [newPartner, setNewPartner] = useState<Partial<PartnerItem>>({
         name: '', logoUrl: ''
     });
 
@@ -66,7 +101,7 @@ const Dashboard: React.FC = () => {
                 addPortfolio(newPortfolio as Omit<PortfolioItem, 'id'>);
             }
             setIsAddingPortfolio(false);
-            setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: '' });
+            setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', thumbnail: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: '' });
         } else {
             alert('제목과 URL은 필수입니다.');
         }
@@ -119,6 +154,27 @@ const Dashboard: React.FC = () => {
         setNewClient(item);
         setEditingClientId(item.id);
         setIsAddingClient(true);
+    };
+
+    const handleAddPartner = () => {
+        if (newPartner.name && newPartner.logoUrl) {
+            if (editingPartnerId) {
+                updatePartner({ ...newPartner, id: editingPartnerId } as PartnerItem);
+                setEditingPartnerId(null);
+            } else {
+                addPartner(newPartner as Omit<PartnerItem, 'id'>);
+            }
+            setIsAddingPartner(false);
+            setNewPartner({ name: '', logoUrl: '' });
+        } else {
+            alert('파트너명과 로고 URL은 필수입니다.');
+        }
+    };
+
+    const startEditPartner = (item: PartnerItem) => {
+        setNewPartner(item);
+        setEditingPartnerId(item.id);
+        setIsAddingPartner(true);
     };
 
     return (
@@ -178,6 +234,12 @@ const Dashboard: React.FC = () => {
                             <ImageIcon size={20} className="mr-3" /> 클라이언트 (Clients)
                         </button>
                         <button
+                            onClick={() => setActiveTab('partners')}
+                            className={`w-full text-left px-4 py-3 rounded-xl flex items-center font-bold transition-all ${activeTab === 'partners' ? 'bg-blue-50 text-blue-600' : 'text-zinc-500 hover:bg-zinc-50'}`}
+                        >
+                            <Users size={20} className="mr-3" /> 파트너 (Partners)
+                        </button>
+                        <button
                             onClick={() => setActiveTab('settings')}
                             className={`w-full text-left px-4 py-3 rounded-xl flex items-center font-bold transition-all ${activeTab === 'settings' ? 'bg-blue-50 text-blue-600' : 'text-zinc-500 hover:bg-zinc-50'}`}
                         >
@@ -198,7 +260,7 @@ const Dashboard: React.FC = () => {
                                     onClick={() => {
                                         setIsAddingPortfolio(!isAddingPortfolio);
                                         setEditingPortfolioId(null);
-                                        setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: '' });
+                                        setNewPortfolio({ title: '', category: 'TV', type: 'image', url: '', thumbnail: '', color: 'from-blue-500 to-indigo-600', detailImages: [], content: '' });
                                     }}
                                     className="bg-blue-600 text-white px-5 py-2.5 rounded-xl flex items-center hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 font-bold text-sm"
                                 >
@@ -218,7 +280,7 @@ const Dashboard: React.FC = () => {
                                         <div className="col-span-1">
                                             <label className="block text-xs font-bold text-zinc-500 mb-1">카테고리</label>
                                             <select className="w-full border p-2.5 rounded-lg bg-zinc-50" value={newPortfolio.category} onChange={e => setNewPortfolio({ ...newPortfolio, category: e.target.value as any })}>
-                                                <option value="TV">TV</option><option value="Radio">Radio</option><option value="PPL">PPL</option><option value="Digital">Digital</option>
+                                                <option value="TV">TV</option><option value="Radio">Radio</option><option value="PPL">PPL</option><option value="ETC">ETC</option>
                                             </select>
                                         </div>
                                         <div className="col-span-1">
@@ -228,15 +290,36 @@ const Dashboard: React.FC = () => {
                                             </select>
                                         </div>
                                         <div className="col-span-1">
-                                            <label className="block text-xs font-bold text-zinc-500 mb-1">미디어 URL</label>
-                                            <input className="w-full border p-2.5 rounded-lg bg-zinc-50" value={newPortfolio.url} onChange={e => setNewPortfolio({ ...newPortfolio, url: e.target.value })} placeholder="https://..." />
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">미디어 URL (유튜브 또는 이미지)</label>
+                                            <div className="flex">
+                                                <input className="w-full border p-2.5 rounded-l-lg bg-zinc-50" value={newPortfolio.url} onChange={e => setNewPortfolio({ ...newPortfolio, url: e.target.value })} placeholder="https://..." />
+                                                <ImageUploadButton onUploadSuccess={(url) => setNewPortfolio(prev => ({ ...prev, url }))} />
+                                            </div>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">썸네일 이미지 URL (선택)</label>
+                                            <div className="flex">
+                                                <input className="w-full border p-2.5 rounded-l-lg bg-zinc-50" value={newPortfolio.thumbnail} onChange={e => setNewPortfolio({ ...newPortfolio, thumbnail: e.target.value })} placeholder="https://..." />
+                                                <ImageUploadButton onUploadSuccess={(url) => setNewPortfolio(prev => ({ ...prev, thumbnail: url }))} />
+                                            </div>
                                         </div>
                                         <div className="col-span-2">
                                             <label className="block text-xs font-bold text-zinc-500 mb-1">배경색 (Tailwind Classes)</label>
                                             <input className="w-full border p-2.5 rounded-lg bg-zinc-50" value={newPortfolio.color} onChange={e => setNewPortfolio({ ...newPortfolio, color: e.target.value })} placeholder="from-blue-500 to-indigo-600" />
                                         </div>
                                         <div className="col-span-2">
-                                            <label className="block text-xs font-bold text-zinc-500 mb-1">상세 레이아웃 추가 이미지 링크들 (엔터키로 구분)</label>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <label className="block text-xs font-bold text-zinc-500">상세 레이아웃 추가 이미지 링크들 (엔터키로 구분)</label>
+                                                <ImageUploadButton 
+                                                    buttonClassName="rounded-md"
+                                                    onUploadSuccess={(url) => {
+                                                        setNewPortfolio(prev => {
+                                                            const currentLinks = prev.detailImages || [];
+                                                            return { ...prev, detailImages: [...currentLinks, url] };
+                                                        });
+                                                    }} 
+                                                />
+                                            </div>
                                             <textarea className="w-full border p-2.5 rounded-lg bg-zinc-50 min-h-[100px]" value={newPortfolio.detailImages?.join('\n') || ''} onChange={e => setNewPortfolio({ ...newPortfolio, detailImages: e.target.value.split('\n').filter(url => url.trim() !== '') })} placeholder="https://image1.jpg&#10;https://image2.jpg" />
                                         </div>
                                         <div className="col-span-2">
@@ -251,28 +334,30 @@ const Dashboard: React.FC = () => {
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                                {portfolio.map((item) => (
-                                    <div key={item.id} className="bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden group hover:shadow-md transition-shadow">
-                                        <div className={`h-40 bg-gradient-to-br ${item.color} flex items-center justify-center relative`}>
-                                            {item.type === 'video' ? <PlayCircle className="text-white opacity-80" size={48} /> : <ImageIcon className="text-white opacity-80" size={48} />}
-                                            <div className="absolute top-2 right-2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 p-2 rounded-lg backdrop-blur-sm">
-                                                <button onClick={() => startEditPortfolio(item)} className="text-white hover:text-blue-400 p-1"><Edit2 size={16} /></button>
-                                                <button onClick={() => deletePortfolio(item.id)} className="text-white hover:text-red-400 p-1"><Trash2 size={16} /></button>
-                                            </div>
-                                        </div>
-                                        <div className="p-4">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div>
-                                                    <h4 className="font-bold text-lg leading-tight">{item.title}</h4>
-                                                    <span className="inline-block mt-2 text-xs bg-zinc-100 text-zinc-600 px-2 py-1 rounded font-medium">{item.category}</span>
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-zinc-400 truncate mt-2">{item.url}</p>
-                                        </div>
+                            <p className="text-zinc-500 mb-6 text-sm">드래그 앤 드롭으로 포트폴리오의 순서를 자유롭게 변경할 수 있습니다. 변경된 순서는 자동으로 저장됩니다.</p>
+                            
+                            <DndContext 
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <SortableContext 
+                                    items={portfolio.map(p => p.id)}
+                                    strategy={rectSortingStrategy}
+                                >
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                                        {portfolio.map((item) => (
+                                            <SortablePortfolioItem 
+                                                key={item.id} 
+                                                item={item} 
+                                                onEdit={startEditPortfolio} 
+                                                onDelete={deletePortfolio} 
+                                            />
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                </SortableContext>
+                            </DndContext>
+
                         </div>
                     )}
 
@@ -435,7 +520,16 @@ const Dashboard: React.FC = () => {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label className="block text-sm font-bold text-zinc-500 mb-2">대표자명</label>
+                                        <input
+                                            className="w-full border p-3 rounded-lg bg-zinc-50 focus:bg-white transition-colors"
+                                            value={editingContact.ceoName || ''}
+                                            onChange={(e) => setEditingContact({ ...editingContact, ceoName: e.target.value })}
+                                            placeholder="예: 박용근"
+                                        />
+                                    </div>
                                     <div>
                                         <label className="block text-sm font-bold text-zinc-500 mb-2">이메일</label>
                                         <input
@@ -444,6 +538,9 @@ const Dashboard: React.FC = () => {
                                             onChange={(e) => setEditingContact({ ...editingContact, email: e.target.value })}
                                         />
                                     </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label className="block text-sm font-bold text-zinc-500 mb-2">전화번호</label>
                                         <input
@@ -515,7 +612,10 @@ const Dashboard: React.FC = () => {
                                         </div>
                                         <div className="col-span-1">
                                             <label className="block text-xs font-bold text-zinc-500 mb-1">로고 이미지 URL</label>
-                                            <input className="w-full border p-2.5 rounded-lg bg-zinc-50 focus:bg-white transition-colors" value={newClient.logoUrl} onChange={e => setNewClient({ ...newClient, logoUrl: e.target.value })} placeholder="https://..." />
+                                            <div className="flex">
+                                                <input className="w-full border p-2.5 rounded-l-lg bg-zinc-50 focus:bg-white transition-colors" value={newClient.logoUrl} onChange={e => setNewClient({ ...newClient, logoUrl: e.target.value })} placeholder="https://..." />
+                                                <ImageUploadButton onUploadSuccess={(url) => setNewClient(prev => ({ ...prev, logoUrl: url }))} />
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex justify-end gap-2">
@@ -536,6 +636,70 @@ const Dashboard: React.FC = () => {
                                                 <Edit2 size={16} />
                                             </button>
                                             <button onClick={() => deleteClient(item.id)} className="bg-white/20 text-white p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200">
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                        <div className="p-2 text-center border-t border-zinc-100">
+                                            <p className="text-xs font-bold text-zinc-700 truncate">{item.name}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- PARTNERS TAB --- */}
+                    {activeTab === 'partners' && (
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-zinc-900">파트너사 CI 관리</h2>
+                                <button
+                                    onClick={() => {
+                                        setIsAddingPartner(!isAddingPartner);
+                                        setEditingPartnerId(null);
+                                        setNewPartner({ name: '', logoUrl: '' });
+                                    }}
+                                    className="bg-blue-600 text-white px-5 py-2.5 rounded-xl flex items-center hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 font-bold text-sm"
+                                >
+                                    {isAddingPartner ? <X size={18} className="mr-2" /> : <Plus size={18} className="mr-2" />}
+                                    {isAddingPartner ? '취소' : '새 파트너 등록'}
+                                </button>
+                            </div>
+
+                            {isAddingPartner && (
+                                <div className="bg-white p-6 rounded-2xl shadow-lg mb-8 border border-zinc-100 ring-4 ring-blue-50/50">
+                                    <h3 className="font-bold mb-4 text-lg">{editingPartnerId ? '파트너 수정' : '새 파트너 등록'}</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="col-span-1">
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">파트너명</label>
+                                            <input className="w-full border p-2.5 rounded-lg bg-zinc-50 focus:bg-white transition-colors" value={newPartner.name} onChange={e => setNewPartner({ ...newPartner, name: e.target.value })} placeholder="ex) 구글" />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1">로고 이미지 URL</label>
+                                            <div className="flex">
+                                                <input className="w-full border p-2.5 rounded-l-lg bg-zinc-50 focus:bg-white transition-colors" value={newPartner.logoUrl} onChange={e => setNewPartner({ ...newPartner, logoUrl: e.target.value })} placeholder="https://..." />
+                                                <ImageUploadButton onUploadSuccess={(url) => setNewPartner(prev => ({ ...prev, logoUrl: url }))} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <button onClick={() => { setIsAddingPartner(false); setEditingPartnerId(null); }} className="px-4 py-2 text-zinc-500 hover:bg-zinc-100 rounded-lg">취소</button>
+                                        <button onClick={handleAddPartner} className="bg-black text-white px-6 py-2 rounded-lg font-bold">{editingPartnerId ? '수정하기' : '등록하기'}</button>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                {partners.map((item) => (
+                                    <div key={item.id} className="bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden group hover:shadow-md transition-shadow relative">
+                                        <div className="h-24 bg-zinc-50 flex items-center justify-center p-4">
+                                            <img src={item.logoUrl} alt={item.name} className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/150x80/f4f4f5/a1a1aa?text=No+Image'; }} />
+                                        </div>
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
+                                            <button onClick={() => startEditPartner(item)} className="bg-white/20 text-white p-2 rounded-full hover:bg-blue-500 hover:text-white transition-colors duration-200">
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button onClick={() => deletePartner(item.id)} className="bg-white/20 text-white p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200">
                                                 <Trash2 size={16} />
                                             </button>
                                         </div>
